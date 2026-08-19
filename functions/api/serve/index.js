@@ -120,12 +120,13 @@ export async function onRequestGet({ request, env }) {
       });
     }
 
+    // Leer el body completo a ArrayBuffer para poder sniffar magic bytes si es necesario
+    const buffer = await object.arrayBuffer();
     const httpMeta = object.httpMetadata || {};
     let r2ContentType = httpMeta.contentType || '';
     
-    // Si R2 no tiene contentType, leer el body y sniffar magic bytes
+    // Si R2 no tiene contentType, sniffar magic bytes
     if (!r2ContentType) {
-      const buffer = await object.arrayBuffer();
       const sniffed = sniffContentType(buffer);
       if (sniffed) {
         r2ContentType = sniffed;
@@ -133,32 +134,20 @@ export async function onRequestGet({ request, env }) {
         // Último recurso: usar la extensión de la key
         r2ContentType = getContentTypeFromKey(key);
       }
-      
-      const headers = new Headers();
-      object.writeHttpMetadata(headers);
-      headers.set('Content-Type', r2ContentType);
-      headers.set('Cache-Control', 'public, max-age=3600');
-      headers.set('ETag', object.httpEtag || '');
-      headers.set('Access-Control-Allow-Origin', '*');
-      headers.set('Accept-Ranges', 'bytes');
-      
-      return new Response(buffer, {
-        status: 200,
-        headers,
-      });
     }
     
-    const finalContentType = r2ContentType;
-    
+    // Construir headers manualmente — NO usar writeHttpMetadata porque puede
+    // sobreescribir el Content-Type con el valor (vacío) del objeto R2.
     const headers = new Headers();
-    object.writeHttpMetadata(headers);
-    headers.set('Content-Type', finalContentType);
+    headers.set('Content-Type', r2ContentType);
     headers.set('Cache-Control', 'public, max-age=3600');
-    headers.set('ETag', object.httpEtag || '');
+    if (object.httpEtag) {
+      headers.set('ETag', object.httpEtag);
+    }
     headers.set('Access-Control-Allow-Origin', '*');
     headers.set('Accept-Ranges', 'bytes');
-
-    return new Response(object.body, {
+    
+    return new Response(buffer, {
       status: 200,
       headers,
     });

@@ -1,0 +1,19 @@
+name = "alianza58"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+
+# D1 database binding — mismo binding name que tenía el proyecto original
+[[d1_databases]]
+binding = "DB"
+database_name = "propiedadesbarinas_db"
+database_id = "0e5d1802-5521-4771-ae0d-cf66878335c6"
+
+# R2 bucket binding — mismo binding name que tenía el proyecto original
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "alianza58-media"
+
+[vars]
+# JWT_SECRET debe configurarse en Cloudflare Pages > Settings > Environment Variables
+# NO lo pongas aquí en texto plano (es secreto).
+# JWT_SECRET = "configurar-en-cloudflare-pages-settings"

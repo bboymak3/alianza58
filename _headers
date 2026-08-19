@@ -1,0 +1,28 @@
+# alianza58 - Cloudflare Pages Headers
+
+# Seguridad global para todas las respuestas
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+
+# API - sin cache sensible + CORS
+/api/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization
+  Cache-Control: no-store
+
+# Archivos estáticos - cache con revalidación
+/css/*
+  Cache-Control: public, max-age=3600, must-revalidate
+/js/*
+  Cache-Control: public, max-age=3600, must-revalidate
+/images/*
+  Cache-Control: public, max-age=604800
+
+# Service Worker - nunca cachear
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate

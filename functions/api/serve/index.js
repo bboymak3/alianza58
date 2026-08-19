@@ -10,9 +10,10 @@
 //
 // Mejoras vs versión anterior:
 //   1. Devuelve Content-Type correcto (image/jpeg, image/png, etc.) — antes text/html
-//   2. Sanitiza la key para evitar path traversal
-//   3. Cachea con Cache-Control público de 1h
-//   4. Solo permite rutas bajo: properties/, users/, site/
+//   2. Si el objeto R2 no tiene httpMetadata.contentType, sniff por magic bytes
+//   3. Sanitiza la key para evitar path traversal
+//   4. Cachea con Cache-Control público de 1h
+//   5. Solo permite rutas bajo: properties/, users/, site/
 
 const ALLOWED_KEY_PREFIXES = [
   'properties/',
@@ -35,6 +36,43 @@ const EXT_TO_CONTENT_TYPE = {
 function getContentTypeFromKey(key, fallback) {
   const ext = (key.split('.').pop() || '').toLowerCase();
   return EXT_TO_CONTENT_TYPE[ext] || fallback || 'application/octet-stream';
+}
+
+// Sniffar magic bytes para determinar el tipo de imagen real
+function sniffContentType(buffer) {
+  if (buffer.byteLength < 4) return null;
+  const bytes = new Uint8Array(buffer.slice(0, 16));
+  
+  // JPEG: FF D8 FF
+  if (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) {
+    return 'image/jpeg';
+  }
+  // PNG: 89 50 4E 47 0D 0A 1A 0A
+  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) {
+    return 'image/png';
+  }
+  // GIF: 47 49 46 38 (GIF8)
+  if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38) {
+    return 'image/gif';
+  }
+  // WebP: RIFF....WEBP
+  if (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
+      bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50) {
+    return 'image/webp';
+  }
+  // BMP: 42 4D
+  if (bytes[0] === 0x42 && bytes[1] === 0x4D) {
+    return 'image/bmp';
+  }
+  // SVG (busca "<svg" o "<?xml")
+  try {
+    const head = new TextDecoder().decode(buffer.slice(0, 256)).toLowerCase();
+    if (head.includes('<svg') || head.includes('<?xml')) {
+      return 'image/svg+xml';
+    }
+  } catch (e) {}
+  
+  return null;
 }
 
 function isKeyAllowed(key) {
@@ -83,9 +121,35 @@ export async function onRequestGet({ request, env }) {
     }
 
     const httpMeta = object.httpMetadata || {};
-    const r2ContentType = httpMeta.contentType || '';
-    const finalContentType = r2ContentType || getContentTypeFromKey(key);
-
+    let r2ContentType = httpMeta.contentType || '';
+    
+    // Si R2 no tiene contentType, leer el body y sniffar magic bytes
+    if (!r2ContentType) {
+      const buffer = await object.arrayBuffer();
+      const sniffed = sniffContentType(buffer);
+      if (sniffed) {
+        r2ContentType = sniffed;
+      } else {
+        // Último recurso: usar la extensión de la key
+        r2ContentType = getContentTypeFromKey(key);
+      }
+      
+      const headers = new Headers();
+      object.writeHttpMetadata(headers);
+      headers.set('Content-Type', r2ContentType);
+      headers.set('Cache-Control', 'public, max-age=3600');
+      headers.set('ETag', object.httpEtag || '');
+      headers.set('Access-Control-Allow-Origin', '*');
+      headers.set('Accept-Ranges', 'bytes');
+      
+      return new Response(buffer, {
+        status: 200,
+        headers,
+      });
+    }
+    
+    const finalContentType = r2ContentType;
+    
     const headers = new Headers();
     object.writeHttpMetadata(headers);
     headers.set('Content-Type', finalContentType);

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuarios | Alianza 58 Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e8e8e8; color: #000; display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px; background: #1a1a1a; color: #ccc; display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.3s;
+    }
+    .sidebar-logo {
+      padding: 20px 22px; border-bottom: 1px solid #333; font-size: 20px; font-weight: 800;
+      color: #fff; text-decoration: none; letter-spacing: -0.5px;
+    }
+    .sidebar-logo span { color: #C0392B; }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 12px; padding: 12px 22px; color: #aaa;
+      text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { background: #262626; color: #fff; }
+    .sidebar-nav a.active { background: #262626; color: #fff; border-left-color: #C0392B; }
+    .sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 22px; border-top: 1px solid #333; }
+    .btn-logout {
+      width: 100%; padding: 10px; background: transparent; border: 1px solid #555; color: #ccc;
+      border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: #C0392B; color: #C0392B; }
+
+    /* MOBILE */
+    .mobile-toggle {
+      display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+      width: 40px; height: 40px; background: #1a1a1a; border: none; border-radius: 8px;
+      color: #fff; font-size: 20px; cursor: pointer;
+    }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+
+    /* MAIN */
+    .main { flex: 1; margin-left: 250px; min-height: 100vh; }
+    .topbar {
+      background: #fff; padding: 16px 28px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .topbar-user { font-size: 14px; color: #555; }
+    .topbar-user strong { color: #000; }
+    .btn-top-logout {
+      padding: 6px 14px; background: transparent; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 13px; cursor: pointer; color: #555; transition: all 0.15s;
+    }
+    .btn-top-logout:hover { border-color: #C0392B; color: #C0392B; }
+
+    .content { padding: 28px; }
+
+    /* TABLE */
+    .table-wrap {
+      background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600;
+      color: #888; text-transform: uppercase; letter-spacing: 0.3px; background: #fafafa;
+      border-bottom: 1px solid #eee; white-space: nowrap;
+    }
+    tbody td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    tbody tr:hover { background: #fafafa; }
+
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-admin { background: #C0392B; color: #fff; }
+    .badge-user { background: #e8e8e8; color: #333; }
+
+    /* ROLE EDIT */
+    .role-select {
+      padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; background: #fff; cursor: pointer;
+    }
+    .role-select:focus { outline: none; border-color: #C0392B; }
+
+    .btn-save-role {
+      padding: 4px 10px; background: #C0392B; color: #fff; border: none; border-radius: 4px;
+      font-size: 11px; font-weight: 600; cursor: pointer; margin-left: 6px; transition: background 0.15s;
+    }
+    .btn-save-role:hover { background: #a93226; }
+
+    /* PAGINATION */
+    .pagination {
+      padding: 16px 20px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .pagination button, .pagination span {
+      padding: 7px 13px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; cursor: pointer;
+      background: #fff; color: #333; transition: all 0.15s;
+    }
+    .pagination button:hover { border-color: #C0392B; color: #C0392B; }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination .current { background: #C0392B; color: #fff; border-color: #C0392B; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; color: #fff; z-index: 999; transform: translateY(80px);
+      opacity: 0; transition: all 0.3s; pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #155724; }
+    .toast.error { background: #C0392B; }
+
+    .loading { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+    .empty { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+
+    /* MODAL */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500;
+      align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 12px; padding: 28px; max-width: 420px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .modal p { font-size: 14px; color: #666; margin-bottom: 16px; }
+    .modal select {
+      width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 20px;
+    }
+    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-btns button {
+      padding: 9px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-cancel-modal { background: #eee; color: #333; }
+    .btn-confirm-role { background: #C0392B; color: #fff; }
+
+    @media (max-width: 768px) {
+      .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; }
+      .content { padding: 16px; }
+    }
+  </style>
+  <link rel="icon" href="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+</head>
+<body>
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="../index.html" class="sidebar-logo" style="display:flex;align-items:center;gap:8px;"><img src="../images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="A58" style="height:28px;width:auto;border-radius:4px;"> Admin</a>
+    <nav class="sidebar-nav">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+        Dashboard
+      </a>
+      <a href="propiedades.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Propiedades
+      </a>
+      <a href="usuarios.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Usuarios
+      </a>
+      <a href="usuarios.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Mensajes
+      </a>
+      <a href="usuarios.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        Estadísticas
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <h1>Gestión de Usuarios</h1>
+      <div class="topbar-right">
+        <span class="topbar-user">Total: <strong id="totalUsers">—</strong></span>
+        <button class="btn-top-logout" onclick="logout()">Salir</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="table-wrap">
+        <div id="tableWrap"><div class="loading">Cargando usuarios...</div></div>
+        <div id="paginationWrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role Edit Modal -->
+  <div class="modal-bg" id="roleModal">
+    <div class="modal">
+      <h3>Cambiar Rol de Usuario</h3>
+      <p id="roleModalUser"></p>
+      <select id="roleSelect">
+        <option value="user">Usuario</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <div class="modal-btns">
+        <button class="btn-cancel-modal" onclick="closeRoleModal()">Cancelar</button>
+        <button class="btn-confirm-role" id="btnConfirmRole">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Auth
+    (function checkAuth() {
+      const token = localStorage.getItem('a58_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+      try {
+        const p = JSON.parse(atob(token.split('.')[1]));
+        if (p.exp < Math.floor(Date.now()/1000) || p.role !== 'admin') {
+          localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user');
+          window.location.href = 'login.html'; return;
+        }
+      } catch(e) { window.location.href = 'login.html'; return; }
+    })();
+
+    const API = (path, opts = {}) => {
+      const token = localStorage.getItem('a58_token');
+      return fetch(path, { ...opts, headers: { ...opts.headers, 'Authorization': 'Bearer ' + token } });
+    };
+
+    function logout() { localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user'); window.location.href = 'login.html'; }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('open'); }
+
+    function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('es-VE',{day:'2-digit',month:'short',year:'numeric'}); }
+
+    function toast(msg, type='success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast ' + type + ' show';
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    let currentPage = 1;
+    let roleUserId = null;
+
+    async function loadUsers() {
+      const wrap = document.getElementById('tableWrap');
+      wrap.innerHTML = '<div class="loading">Cargando...</div>';
+      try {
+        const res = await API('/api/auth/users?page=' + currentPage + '&limit=25');
+        if (!res.ok) throw new Error('Not authorized');
+        const data = await res.json();
+        const users = data.users || [];
+        const pg = data.pagination || {};
+
+        document.getElementById('totalUsers').textContent = pg.total || 0;
+
+        if (!users.length) { wrap.innerHTML = '<div class="empty">No hay usuarios registrados</div>'; document.getElementById('paginationWrap').innerHTML = ''; return; }
+
+        // Fetch property counts per user
+        const propsRes = await API('/api/properties?status=all&limit=1000');
+        const propsData = await propsRes.json();
+        const allProps = propsData.properties || [];
+        const propCounts = {};
+        allProps.forEach(p => { propCounts[p.user_id] = (propCounts[p.user_id] || 0) + 1; });
+
+        let html = '<table><thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Rol</th><th>Propiedades</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>';
+        users.forEach(u => {
+          const roleClass = u.role === 'admin' ? 'badge-admin' : 'badge-user';
+          html += `<tr>
+            <td>#${u.id}</td>
+            <td><strong>${u.name||'—'}</strong></td>
+            <td>${u.email||'—'}</td>
+            <td>${u.phone||'—'}</td>
+            <td><span class="badge ${roleClass}">${u.role||'user'}</span></td>
+            <td>${propCounts[u.id]||0}</td>
+            <td>${fmtDate(u.created_at)}</td>
+            <td><button class="btn-save-role" onclick="openRoleModal(${u.id},'${u.name||''}','${u.role||'user'}')">Editar Rol</button></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        wrap.innerHTML = html;
+
+        // Pagination
+        const pages = pg.pages || 1;
+        if (pages > 1) {
+          let phtml = '<div class="pagination">';
+          phtml += `<button ${currentPage<=1?'disabled':''} onclick="goPage(${currentPage-1})">← Anterior</button>`;
+          for (let i = 1; i <= pages; i++) {
+            if (i === currentPage) phtml += `<span class="current">${i}</span>`;
+            else phtml += `<button onclick="goPage(${i})">${i}</button>`;
+          }
+          phtml += `<button ${currentPage>=pages?'disabled':''} onclick="goPage(${currentPage+1})">Siguiente →</button>`;
+          phtml += '</div>';
+          document.getElementById('paginationWrap').innerHTML = phtml;
+        } else {
+          document.getElementById('paginationWrap').innerHTML = '';
+        }
+      } catch(e) {
+        wrap.innerHTML = '<div class="empty">Error al cargar usuarios. Verifica que el endpoint /api/auth/users exista.</div>';
+      }
+    }
+
+    function goPage(p) { currentPage = p; loadUsers(); }
+
+    function openRoleModal(id, name, role) {
+      roleUserId = id;
+      document.getElementById('roleModalUser').textContent = 'Usuario: ' + name + ' (#' + id + ')';
+      document.getElementById('roleSelect').value = role;
+      document.getElementById('roleModal').classList.add('open');
+    }
+    function closeRoleModal() { roleUserId = null; document.getElementById('roleModal').classList.remove('open'); }
+
+    document.getElementById('btnConfirmRole').addEventListener('click', async function() {
+      if (!roleUserId) return;
+      const newRole = document.getElementById('roleSelect').value;
+      try {
+        const res = await API('/api/auth/users/' + roleUserId, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: newRole })
+        });
+        if (res.ok) { toast('Rol actualizado a ' + newRole); closeRoleModal(); loadUsers(); }
+        else { const err = await res.json(); toast(err.error || 'Error al actualizar', 'error'); }
+      } catch(e) { toast('Error de conexión', 'error'); }
+    });
+
+    loadUsers();
+  </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Busca propiedades en Venezuela. Casas, apartamentos, terrenos, locales comerciales en venta y alquiler.">
+  <title>Propiedades en Venta y Alquiler | Alianza 58 Bienes Raíces</title>
+  <link rel="canonical" href="propiedades.html">
+  <link rel="icon" href="images/favicon.png" type="image/png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Propiedades en Venta y Alquiler | Alianza 58 Bienes Raíces">
+  <meta property="og:description" content="Busca propiedades en Venezuela. Casas, apartamentos, terrenos, locales comerciales en venta y alquiler.">
+  <meta property="og:image" content="https://alianza58.pages.dev/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg">
+  <meta property="og:url" content="https://alianza58.pages.dev/propiedades">
+  <meta property="og:site_name" content="Alianza 58 Bienes Raíces C.A.">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Propiedades en Venta y Alquiler | Alianza 58 Bienes Raíces">
+  <meta name="twitter:description" content="Busca propiedades en Venezuela. Casas, apartamentos, terrenos, locales comerciales en venta y alquiler.">
+  <meta name="twitter:image" content="https://alianza58.pages.dev/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg">
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+
+  <!-- JSON-LD: BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://alianza58.pages.dev/"},
+      {"@type": "ListItem", "position": 2, "name": "Propiedades", "item": "https://alianza58.pages.dev/propiedades"}
+    ]
+  }
+  </script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- ============ HEADER / NAV ============ -->
+  <header id="mainHeader">
+    <nav class="navbar">
+      <a href="index.html" class="logo" aria-label="Alianza 58 Inicio">
+        <img src="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58 Bienes Raíces" class="logo-img">
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="propiedades.html" class="active">Propiedades</a></li>
+        <li class="dropdown">
+          <a href="servicios.html">Servicios <i class="fa-solid fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="servicios/venta.html">Venta</a></li>
+            <li><a href="servicios/alquiler.html">Alquiler</a></li>
+            <li><a href="servicios/tasacion.html">Tasación</a></li>
+          </ul>
+        </li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="tel:04126942043" class="nav-phone"><i class="fa-solid fa-phone"></i> 0412-6942043</a>
+        <a href="cuenta/publicar.html" class="nav-cta">Publicar Propiedad</a>
+        <a href="admin.html" class="nav-admin">Admin</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="propiedades.html">Propiedades</a></li>
+        <li><a href="servicios/venta.html">Servicios: Venta</a></li>
+        <li><a href="servicios/alquiler.html">Servicios: Alquiler</a></li>
+        <li><a href="servicios/tasacion.html">Servicios: Tasación</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="mobile-menu-contact">
+        <a href="cuenta/publicar.html" class="btn-whatsapp-mobile" style="background:#C0392B;">
+          <i class="fa-solid fa-plus"></i> Publicar Propiedad
+        </a>
+        <a href="tel:04126942043"><i class="fa-solid fa-phone"></i> 0412-6942043</a>
+        <a href="https://wa.me/584126942043?text=Hola%2C%20me%20interesa%20una%20propiedad" class="btn-whatsapp-mobile"><i class="fa-brands fa-whatsapp"></i> Escríbenos por WhatsApp</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ PAGE HEADER BANNER ============ -->
+  <section class="page-header" style="background: linear-gradient(135deg, #C0392B 0%, #922B21 100%);">
+    <div class="container">
+      <h1>Propiedades en Barinas</h1>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Inicio</a> <i class="fa-solid fa-chevron-right"></i> <span>Propiedades en Barinas</span>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <section class="section properties-page">
+    <div class="container">
+      <div class="properties-layout">
+
+        <!-- LEFT SIDEBAR: FILTERS -->
+        <aside class="filters-sidebar" id="filtersSidebar">
+          <button class="filters-close" id="filtersClose" aria-label="Cerrar filtros"><i class="fa-solid fa-xmark"></i></button>
+          <h3><i class="fa-solid fa-sliders"></i> Filtros</h3>
+          <form id="filtersForm">
+            <div class="filter-group">
+              <label for="filterTipo">Tipo de Propiedad</label>
+              <select id="filterTipo" name="tipo">
+                <option value="">Todos los tipos</option>
+                <option value="casa">Casa</option>
+                <option value="apartamento">Apartamento</option>
+                <option value="terreno">Terreno</option>
+                <option value="local">Local Comercial</option>
+                <option value="oficina">Oficina</option>
+                <option value="finca">Finca</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterOperacion">Operación</label>
+              <select id="filterOperacion" name="operacion">
+                <option value="">Todas</option>
+                <option value="venta">Venta</option>
+                <option value="arrendamiento">Arrendamiento</option>
+                <option value="ambos">Ambos</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterPrecioMin">Precio mínimo</label>
+              <select id="filterPrecioMin" name="precio_min">
+                <option value="">Sin mínimo</option>
+                <option value="0">$0</option>
+                <option value="10000">$10.000</option>
+                <option value="20000">$20.000</option>
+                <option value="50000">$50.000</option>
+                <option value="100000">$100.000</option>
+                <option value="200000">$200.000</option>
+                <option value="500000">$500.000</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterPrecioMax">Precio máximo</label>
+              <select id="filterPrecioMax" name="precio_max">
+                <option value="">Sin máximo</option>
+                <option value="10000">$10.000</option>
+                <option value="20000">$20.000</option>
+                <option value="50000">$50.000</option>
+                <option value="100000">$100.000</option>
+                <option value="200000">$200.000</option>
+                <option value="500000">$500.000</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterHabitaciones">Habitaciones</label>
+              <select id="filterHabitaciones" name="habitaciones">
+                <option value="">Indiferente</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+                <option value="5">5+</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterBanios">Baños</label>
+              <select id="filterBanios" name="banos">
+                <option value="">Indiferente</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filterAreaMin">Área mínima</label>
+              <select id="filterAreaMin" name="area_min">
+                <option value="">Sin mínimo</option>
+                <option value="50">50 m²</option>
+                <option value="100">100 m²</option>
+                <option value="200">200 m²</option>
+                <option value="500">500 m²</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-filter-apply" style="background:#C0392B;color:#fff;border:none;padding:12px 24px;border-radius:8px;cursor:pointer;width:100%;font-size:1rem;font-weight:600;">
+              <i class="fa-solid fa-magnifying-glass"></i> Aplicar filtros
+            </button>
+            <a href="propiedades.html" class="btn-filter-clear" style="display:block;text-align:center;margin-top:10px;color:#C0392B;text-decoration:none;font-size:0.9rem;">Limpiar filtros</a>
+          </form>
+        </aside>
+
+        <!-- RIGHT MAIN CONTENT -->
+        <div class="properties-main">
+          <!-- Mobile filter toggle -->
+          <button class="btn-filter-toggle" id="filterToggle"><i class="fa-solid fa-sliders"></i> Filtros</button>
+
+          <!-- Active filters tags -->
+          <div class="active-filters" id="activeFilters"></div>
+
+          <!-- Sort & View -->
+          <div class="results-toolbar">
+            <div class="results-info">
+              <span id="resultsCount">0 propiedades encontradas</span>
+            </div>
+            <div class="results-actions">
+              <select id="sortSelect" class="sort-select">
+                <option value="recientes">Más recientes</option>
+                <option value="precio_menor">Precio menor</option>
+                <option value="precio_mayor">Precio mayor</option>
+                <option value="mas_vistos">Más vistos</option>
+              </select>
+              <div class="view-toggle">
+                <button class="view-btn active" id="viewGrid" aria-label="Vista cuadrícula"><i class="fa-solid fa-grid-2"></i></button>
+                <button class="view-btn" id="viewList" aria-label="Vista lista"><i class="fa-solid fa-list"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading spinner -->
+          <div class="content-loading" id="searchSpinner">
+            <div class="spinner"></div>
+            <p>Cargando propiedades...</p>
+          </div>
+
+          <!-- Property cards grid -->
+          <div id="searchResultsGrid" class="properties-grid"></div>
+
+          <!-- No results state -->
+          <div class="no-results" id="noResults" style="display:none;text-align:center;padding:60px 20px;">
+            <i class="fa-solid fa-house-circle-xmark" style="font-size:3rem;color:#C0392B;margin-bottom:1rem;"></i>
+            <h3>No se encontraron propiedades</h3>
+            <p style="color:#666;margin:0.5rem 0 1.5rem;">Intenta ajustar los filtros de búsqueda para ver más resultados.</p>
+            <a href="propiedades.html" class="btn-filter-clear" style="color:#C0392B;font-weight:600;text-decoration:none;">Ver todas las propiedades</a>
+          </div>
+
+          <!-- Pagination -->
+          <div id="pagination" class="pagination"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-about">
+          <a href="index.html" class="footer-logo"><img src="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58" class="footer-logo-img"></a>
+          <p>Alianza 58 Bienes Raíces C.A. Brindamos asesoría inmobiliaria integral con presencia en Barinas y los 24 estados de Venezuela.</p>
+          <div class="footer-social">
+            <a href="propiedades.html#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="propiedades.html#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/584126942043" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="propiedades.html">Propiedades</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <ul>
+            <li><i class="fa-solid fa-phone"></i> 0412-6942043</li>
+            <li><i class="fa-solid fa-envelope"></i> info@alianza58.com</li>
+            <li><i class="fa-solid fa-location-dot"></i> Barinas, Venezuela</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacidad.html">Política de Privacidad</a></li>
+            <li><a href="terminos.html">Términos y Condiciones</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Alianza 58 Bienes Raíces C.A. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ WHATSAPP FLOATING BUTTON ============ -->
+  <a href="https://wa.me/584126942043?text=Hola%2C%20me%20interesa%20una%20propiedad"
+     class="whatsapp-float" aria-label="Escríbenos por WhatsApp" title="Escríbenos por WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

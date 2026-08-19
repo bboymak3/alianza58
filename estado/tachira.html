@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inmuebles en Táchira - Alianza 58</title>
+  <meta name="description" content="Encuentra 0 propiedades en Táchira, Venezuela. Casas, apartamentos, terrenos y más en venta y alquiler con Alianza 58.">
+  <link rel="canonical" href="tachira.html">
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Inmuebles en Táchira - Alianza 58">
+  <meta property="og:description" content="Encuentra 0 propiedades en Táchira, Venezuela. Casas, apartamentos, terrenos y más en venta y alquiler con Alianza 58.">
+  <meta property="og:url" content="https://alianza58.pages.dev/estado/tachira">
+  <meta property="og:site_name" content="Alianza 58">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Inmuebles en Táchira - Alianza 58">
+  <meta name="twitter:description" content="Encuentra 0 propiedades en Táchira, Venezuela. Casas, apartamentos, terrenos y más en venta y alquiler con Alianza 58.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Inmuebles en Táchira",
+    "description": "Encuentra 0 propiedades en Táchira, Venezuela. Casas, apartamentos, terrenos y más en venta y alquiler con Alianza 58.",
+    "url": "https://alianza58.pages.dev/estado/tachira",
+    "isPartOf": { "@type": "WebSite", "name": "Alianza 58", "url": "https://alianza58.pages.dev" },
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": 0,
+      "itemListElement": [
+        
+      ]
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://alianza58.pages.dev/" },
+      { "@type": "ListItem", "position": 2, "name": "Propiedades", "item": "https://alianza58.pages.dev/propiedades" },
+      { "@type": "ListItem", "position": 3, "name": "Táchira" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <style>
+    /* === RESET & BASE === */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: #1a1a1a;
+      background: #f5f5f5;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: #C0392B; text-decoration: none; transition: color .2s; }
+    a:hover { color: #a93226; }
+    img { display: block; max-width: 100%; }
+
+    /* === UTILITIES === */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    /* === NAV === */
+    .nav {
+      background: #fff;
+      border-bottom: 2px solid #C0392B;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .nav-logo:hover { color: #1a1a1a; }
+    .nav-logo-bold { color: #C0392B; font-weight: 800; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      color: #555;
+      font-size: .9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: #C0392B; }
+    .nav-cta {
+      background: #C0392B !important;
+      color: #fff !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      font-size: .85rem !important;
+      transition: background .2s !important;
+    }
+    .nav-cta:hover { background: #a93226 !important; }
+    .nav-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+    .nav-mobile-toggle span { display: block; width: 22px; height: 2px; background: #1a1a1a; margin: 5px 0; border-radius: 2px; transition: .3s; }
+
+    @media (max-width: 768px) {
+      .nav-mobile-toggle { display: block; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 16px 20px;
+        border-bottom: 1px solid #eee;
+        gap: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,.08);
+      }
+    }
+
+    /* === HERO === */
+    .hero {
+      background: linear-gradient(135deg, #1a1a1a 0%, #C0392B 60%, #e74c3c 100%);
+      color: #fff;
+      padding: 56px 0 52px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-breadcrumb {
+      font-size: .82rem;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 16px;
+    }
+    .hero-breadcrumb a { color: rgba(255,255,255,.7); text-decoration: none; }
+    .hero-breadcrumb a:hover { color: #fff; }
+    .hero-breadcrumb .sep { margin: 0 8px; opacity: .5; }
+    .hero h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    .hero .subtitle {
+      font-size: 1.1rem;
+      opacity: .9;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+    .hero .badge-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.15);
+      backdrop-filter: blur(4px);
+      padding: 8px 22px;
+      border-radius: 24px;
+      font-size: .9rem;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,.2);
+    }
+    .hero .badge-count strong { font-weight: 700; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 40px 0 36px; }
+      .hero h1 { font-size: 1.8rem; }
+      .hero .subtitle { font-size: .95rem; }
+    }
+
+    /* === SECTION HEADER === */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .section-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header h2 .accent { color: #C0392B; }
+
+    /* === MAP SECTION === */
+    .map-section {
+      margin-bottom: 40px;
+    }
+    .map-wrapper {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      border: 1px solid #e8e8e8;
+    }
+    #map {
+      height: 420px;
+      width: 100%;
+      z-index: 1;
+    }
+    @media (max-width: 640px) {
+      #map { height: 300px; }
+    }
+
+    /* === PROPERTY GRID === */
+    .properties-section { margin-bottom: 48px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; gap: 16px; }
+    }
+
+    /* === PROPERTY CARD === */
+    .prop-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      transition: transform .25s ease, box-shadow .25s ease;
+      border: 1px solid #eee;
+      position: relative;
+      display: block;
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+    .prop-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.1);
+      color: #1a1a1a;
+    }
+    .prop-card .card-img {
+      position: relative;
+      width: 100%;
+      height: 210px;
+      overflow: hidden;
+      background: #e9ecef;
+    }
+    .prop-card .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .4s ease;
+    }
+    .prop-card:hover .card-img img { transform: scale(1.04); }
+    .prop-card .card-img .placeholder-img {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+      color: #bbb;
+      font-size: 2.5rem;
+    }
+    .prop-card .badges {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+    .prop-card .op-badge {
+      display: inline-block;
+      background: #C0392B;
+      color: #fff;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .prop-card .type-badge {
+      display: inline-block;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(4px);
+      color: #1a1a1a;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 500;
+    }
+    .prop-card .featured-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #f39c12;
+      color: #fff;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(243,156,18,.3);
+    }
+    .prop-card .card-body { padding: 16px; }
+    .prop-card .card-title {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .prop-card .card-location {
+      font-size: .82rem;
+      color: #888;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .prop-card .card-price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #C0392B;
+      margin-bottom: 10px;
+    }
+    .prop-card .card-specs {
+      display: flex;
+      gap: 16px;
+      font-size: .8rem;
+      color: #666;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+    }
+    .prop-card .card-specs span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    /* === EMPTY STATE === */
+    .empty-state {
+      text-align: center;
+      padding: 64px 20px;
+    }
+    .empty-state .empty-icon {
+      font-size: 3.5rem;
+      margin-bottom: 16px;
+    }
+    .empty-state h3 {
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .empty-state p {
+      color: #888;
+      margin-bottom: 24px;
+      font-size: .95rem;
+    }
+    .empty-state .btn-primary {
+      display: inline-block;
+      background: #C0392B;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .empty-state .btn-primary:hover { background: #a93226; color: #fff; }
+
+    /* === FOOTER === */
+    .site-footer {
+      background: #1a1a1a;
+      color: #aaa;
+      padding: 40px 0 32px;
+      margin-top: 0;
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .footer-brand strong { color: #C0392B; }
+    .footer-copy { font-size: .82rem; color: #777; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a {
+      color: #999;
+      font-size: .82rem;
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: #C0392B; }
+
+    @media (max-width: 640px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
+    }
+
+    /* === LEAFLET POPUP OVERRIDES === */
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px !important;
+      box-shadow: 0 8px 30px rgba(0,0,0,.15) !important;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .leaflet-popup-content {
+      margin: 0 !important;
+      width: 260px !important;
+      min-width: 260px !important;
+    }
+    .leaflet-popup-tip {
+      box-shadow: 0 4px 12px rgba(0,0,0,.1) !important;
+    }
+    .map-popup-card {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .map-popup-card .popup-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+    .map-popup-card .popup-img-placeholder {
+      width: 100%;
+      height: 100px;
+      background: linear-gradient(135deg, #f5f5f5, #eee);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: #ccc;
+    }
+    .map-popup-card .popup-body {
+      padding: 12px 14px 14px;
+    }
+    .map-popup-card .popup-badges {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+    .map-popup-card .popup-op {
+      background: #C0392B;
+      color: #fff;
+      font-size: .65rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+    .map-popup-card .popup-type {
+      background: #f5f5f5;
+      color: #555;
+      font-size: .65rem;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .map-popup-card .popup-title {
+      font-size: .88rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .map-popup-card .popup-city {
+      font-size: .75rem;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .map-popup-card .popup-price {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #C0392B;
+      margin-bottom: 10px;
+    }
+    .map-popup-card .popup-specs {
+      display: flex;
+      gap: 12px;
+      font-size: .72rem;
+      color: #777;
+      padding-top: 8px;
+      border-top: 1px solid #f0f0f0;
+      margin-bottom: 10px;
+    }
+    .map-popup-card .popup-specs span {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .map-popup-card .popup-link {
+      display: block;
+      width: 100%;
+      background: #C0392B;
+      color: #fff !important;
+      text-align: center;
+      padding: 8px 0;
+      font-size: .8rem;
+      font-weight: 600;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background .2s;
+    }
+    .map-popup-card .popup-link:hover {
+      background: #a93226;
+      color: #fff !important;
+    }
+
+    /* Custom marker icon */
+    .custom-marker {
+      background: #C0392B;
+      border: 3px solid #fff;
+      border-radius: 50% 50% 50% 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(192,57,43,.4);
+      transform: rotate(-45deg);
+    }
+    .custom-marker span {
+      transform: rotate(45deg);
+      color: #fff;
+      font-size: 14px;
+      line-height: 1;
+    }
+  </style>
+  <!-- Rich Snippet: ItemList for properties in state -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Propiedades en Táchira",
+    "description": "Encuentra 0 propiedades en Táchira, Venezuela. Casas, apartamentos, terrenos y más en venta y alquiler con Alianza 58.",
+    "numberOfItems": 0,
+    "itemListElement": 
+  }
+  </script>
+</head>
+<body>
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <img src="../images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58" style="height:36px;width:auto;border-radius:4px;">
+      </a>
+      <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links">
+        <a href="../propiedades.html">Propiedades</a>
+        <a href="barinas.html">Barinas</a>
+        <a href="../contacto.html">Contacto</a>
+        <a href="../contacto.html" class="nav-cta">Publica tu inmueble</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-breadcrumb">
+        <a href="../index.html">Inicio</a><span class="sep">›</span>
+        <a href="../propiedades.html">Propiedades</a><span class="sep">›</span>
+        <span>Táchira</span>
+      </div>
+      <h1>Táchira</h1>
+      <p class="subtitle">Inmuebles en venta y alquiler</p>
+      <div class="badge-count">
+        <strong>0</strong> propiedades disponibles
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    
+    <!-- EMPTY STATE -->
+    <div class="empty-state">
+      <div class="empty-icon">🏘️</div>
+      <h3>No hay propiedades en Táchira</h3>
+      <p>Pronto tendremos inmuebles disponibles en esta zona.</p>
+      <a href="../propiedades.html" class="btn-primary">Ver todas las propiedades</a>
+    </div>
+    
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand"><img src="../images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58" style="height:28px;width:auto;border-radius:4px;filter:brightness(0) invert(1);"></div>
+      <div class="footer-copy">© 2026 Alianza 58 — Inmuebles en Venezuela</div>
+      <div class="footer-links">
+        <a href="../nosotros.html">Nosotros</a>
+        <a href="../contacto.html">Contacto</a>
+        <a href="../privacidad.html">Privacidad</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  (function() {
+    // Map initialization
+    var defaultCenter = [8, -72];
+    var map = L.map('map', {
+      scrollWheelZoom: false
+    }).setView(defaultCenter, 11);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    // Custom red marker icon
+    var redIcon = L.divIcon({
+      className: '',
+      html: '<div class="custom-marker"><span>📍</span></div>',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -34]
+    });
+
+    // Property markers data
+    var markers = [];
+
+    // Build popup HTML
+    function buildPopup(m) {
+      var imgHtml = m.image
+        ? '<img class="popup-img" src="' + m.image + '" alt="' + m.title.replace(/"/g, '&quot;') + '" />'
+        : '<div class="popup-img-placeholder">🏘️</div>';
+
+      var specsHtml = '';
+      if (m.bedrooms) specsHtml += '<span>🛏 ' + m.bedrooms + ' hab.</span>';
+
+      return '<div class="map-popup-card">'
+        + imgHtml
+        + '<div class="popup-body">'
+        +   '<div class="popup-badges">'
+        +     '<span class="popup-op">' + m.operation + '</span>'
+        +     '<span class="popup-type">' + m.type + '</span>'
+        +   '</div>'
+        +   '<div class="popup-title">' + m.title + '</div>'
+        +   '<div class="popup-city">📍 ' + (m.city || '') + '</div>'
+        +   '<div class="popup-price">' + m.price + '</div>'
+        +   (specsHtml ? '<div class="popup-specs">' + specsHtml + '</div>' : '')
+        +   '<a href="https://alianza58.pages.dev/propiedad/'&#32;+&#32;m.slug&#32;+&#32;'" class="popup-link">Ver propiedad →</a>'
+        + '</div>'
+      + '</div>';
+    }
+
+    // Add markers
+    var bounds = [];
+    markers.forEach(function(m) {
+      var marker = L.marker([m.lat, m.lng], { icon: redIcon })
+        .addTo(map)
+        .bindPopup(buildPopup(m), { maxWidth: 280, minWidth: 260 });
+      bounds.push([m.lat, m.lng]);
+    });
+
+    // Fit map to markers if we have any, otherwise show default center
+    if (bounds.length > 0) {
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 13 });
+    }
+
+    // Fix map rendering after images load (Leaflet tile bug)
+    setTimeout(function() { map.invalidateSize(); }, 300);
+  })();
+  </script>
+</body>
+</html>

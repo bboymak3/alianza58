@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Alianza 58 Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e8e8e8; color: #000; display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px; background: #1a1a1a; color: #ccc; display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.3s;
+    }
+    .sidebar-logo {
+      padding: 20px 22px; border-bottom: 1px solid #333; font-size: 20px; font-weight: 800;
+      color: #fff; text-decoration: none; letter-spacing: -0.5px;
+    }
+    .sidebar-logo span { color: #C0392B; }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 12px; padding: 12px 22px; color: #aaa;
+      text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { background: #262626; color: #fff; }
+    .sidebar-nav a.active { background: #262626; color: #fff; border-left-color: #C0392B; }
+    .sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 22px; border-top: 1px solid #333; }
+    .btn-logout {
+      width: 100%; padding: 10px; background: transparent; border: 1px solid #555; color: #ccc;
+      border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: #C0392B; color: #C0392B; }
+
+    /* MOBILE TOGGLE */
+    .mobile-toggle {
+      display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+      width: 40px; height: 40px; background: #1a1a1a; border: none; border-radius: 8px;
+      color: #fff; font-size: 20px; cursor: pointer;
+    }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90;
+    }
+
+    /* MAIN */
+    .main { flex: 1; margin-left: 250px; min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar {
+      background: #fff; padding: 16px 28px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .topbar-user { font-size: 14px; color: #555; }
+    .topbar-user strong { color: #000; }
+    .btn-top-logout {
+      padding: 6px 14px; background: transparent; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 13px; cursor: pointer; color: #555; transition: all 0.15s;
+    }
+    .btn-top-logout:hover { border-color: #C0392B; color: #C0392B; }
+
+    /* CONTENT */
+    .content { padding: 28px; }
+
+    /* STATS GRID */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .stat-card {
+      background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .stat-card .stat-label { font-size: 13px; color: #888; font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .stat-card .stat-value { font-size: 32px; font-weight: 800; color: #000; }
+    .stat-card .stat-icon { font-size: 24px; float: right; color: #C0392B; opacity: 0.6; }
+
+    /* SECTIONS */
+    .section { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 28px; overflow: hidden; }
+    .section-header {
+      padding: 18px 22px; border-bottom: 1px solid #eee; display: flex;
+      align-items: center; justify-content: space-between;
+    }
+    .section-header h2 { font-size: 16px; font-weight: 700; }
+    .section-header a { font-size: 13px; color: #C0392B; text-decoration: none; font-weight: 600; }
+    .section-header a:hover { text-decoration: underline; }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600;
+      color: #888; text-transform: uppercase; letter-spacing: 0.3px; background: #fafafa;
+      border-bottom: 1px solid #eee;
+    }
+    tbody td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+    tbody tr:hover { background: #fafafa; }
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    }
+    .badge-pending { background: #fef3cd; color: #856404; }
+    .badge-approved { background: #d4edda; color: #155724; }
+    .badge-rejected { background: #f8d7da; color: #721c24; }
+    .badge-sold { background: #d1ecf1; color: #0c5460; }
+    .badge-rented { background: #e2d5f1; color: #4a235a; }
+    .btn-sm {
+      padding: 5px 12px; border: none; border-radius: 5px; font-size: 12px; cursor: pointer;
+      font-weight: 600; transition: opacity 0.15s; text-decoration: none;
+    }
+    .btn-sm:hover { opacity: 0.85; }
+    .btn-edit { background: #eee; color: #333; }
+    .btn-view { background: #d4edda; color: #155724; }
+
+    /* MESSAGES */
+    .msg-item {
+      padding: 14px 22px; border-bottom: 1px solid #f0f0f0; display: flex; gap: 14px; align-items: flex-start;
+    }
+    .msg-item:last-child { border-bottom: none; }
+    .msg-avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: #C0392B; color: #fff;
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
+    .msg-body { flex: 1; min-width: 0; }
+    .msg-name { font-size: 14px; font-weight: 600; color: #000; }
+    .msg-text { font-size: 13px; color: #666; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-meta { font-size: 12px; color: #999; margin-top: 4px; }
+    .msg-unread .msg-name::after {
+      content: 'Nueva'; margin-left: 8px; font-size: 10px; background: #C0392B; color: #fff;
+      padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    }
+
+    /* LOADING / EMPTY */
+    .loading { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+    .empty { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .content { padding: 16px; }
+      table { font-size: 13px; }
+      thead th, tbody td { padding: 10px 10px; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="icon" href="admin/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+</head>
+<body>
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-logo" style="display:flex;align-items:center;gap:8px;"><img src="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="A58" style="height:28px;width:auto;border-radius:4px;"> Admin</a>
+    <nav class="sidebar-nav">
+      <a href="admin/index.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+        Dashboard
+      </a>
+      <a href="admin/propiedades.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Propiedades
+      </a>
+      <a href="admin/usuarios.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Usuarios
+      </a>
+      <a href="admin/index.html#settings-section" onclick="document.getElementById('settingsWrap').closest('.section').scrollIntoView({behavior:'smooth'});return false;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        Logos / Config
+      </a>
+      <a href="admin/propiedades.html@status=pending.html" id="sidebarPendingLink">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        Pendientes <span id="sidebarPendingBadge" style="background:#C0392B;color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700;margin-left:auto;">0</span>
+      </a>
+      <a href="admin/index.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Mensajes
+      </a>
+      <a href="admin/index.html#stats-section" onclick="document.getElementById('stats-section').scrollIntoView({behavior:'smooth'});return false;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        Estadísticas
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <header class="topbar">
+      <h1>Dashboard</h1>
+      <div class="topbar-right">
+        <span class="topbar-user">Hola, <strong id="adminName">Admin</strong></span>
+        <button class="btn-top-logout" onclick="logout()">Salir</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">🏠</span>
+          <div class="stat-label">Total Propiedades</div>
+          <div class="stat-value" id="statTotal">—</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-label">Pendientes</div>
+          <div class="stat-value" id="statPending">—</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">👥</span>
+          <div class="stat-label">Usuarios Registrados</div>
+          <div class="stat-value" id="statUsers">—</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">✉️</span>
+          <div class="stat-label">Mensajes Sin Leer</div>
+          <div class="stat-value" id="statMessages">—</div>
+        </div>
+      </div>
+
+      <!-- Logo & Watermark -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Logo y Marca de Agua</h2>
+          <a href="index.html" target="_blank">Ver sitio →</a>
+        </div>
+        <div id="settingsWrap">
+          <div class="loading">Cargando configuración...</div>
+        </div>
+      </div>
+
+      <!-- Banner Management -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Banner del Sitio</h2>
+        </div>
+        <div id="bannerWrap">
+          <div class="loading">Cargando banner...</div>
+        </div>
+      </div>
+
+      <!-- Recent Properties -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Propiedades Recientes</h2>
+          <a href="admin/propiedades.html">Ver todas →</a>
+        </div>
+        <div id="recentPropsWrap">
+          <div class="loading">Cargando propiedades...</div>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div class="section" id="stats-section">
+        <div class="section-header">
+          <h2>Estadísticas Detalladas</h2>
+        </div>
+        <div id="statsDetailWrap">
+          <div class="loading">Cargando estadísticas...</div>
+        </div>
+      </div>
+
+      <!-- Recent Messages -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Mensajes Recientes</h2>
+        </div>
+        <div id="recentMsgsWrap">
+          <div class="loading">Cargando mensajes...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auth check
+    (function checkAuth() {
+      const token = localStorage.getItem('a58_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+      try {
+        const p = JSON.parse(atob(token.split('.')[1]));
+        if (p.exp < Math.floor(Date.now()/1000) || p.role !== 'admin') {
+          localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user');
+          window.location.href = 'login.html'; return;
+        }
+      } catch(e) { window.location.href = 'login.html'; return; }
+      const user = JSON.parse(localStorage.getItem('a58_user') || '{}');
+      document.getElementById('adminName').textContent = user.name || 'Admin';
+    })();
+
+    const API = (path, opts = {}) => {
+      const token = localStorage.getItem('a58_token');
+      return fetch(path, { ...opts, headers: { ...opts.headers, 'Authorization': 'Bearer ' + token } });
+    };
+
+    function logout() {
+      localStorage.removeItem('a58_token');
+      localStorage.removeItem('a58_user');
+      window.location.href = 'login.html';
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.querySelector('.sidebar-overlay').classList.toggle('open');
+    }
+
+    function statusBadge(s) {
+      const m = { pending:'badge-pending', approved:'badge-approved', rejected:'badge-rejected', sold:'badge-sold', rented:'badge-rented' };
+      return `<span class="badge ${m[s]||''}">${s||'—'}</span>`;
+    }
+
+    function fmtDate(d) {
+      if (!d) return '—';
+      return new Date(d).toLocaleDateString('es-VE', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function fmtPrice(p, c) {
+      if (!p) return '—';
+      const num = Number(p).toLocaleString('es-VE');
+      return `$${num}` + (c !== 'USD' ? ' ' + (c||'') : ' USD');
+    }
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const [statsRes, propsRes, msgsRes] = await Promise.all([
+          fetch('/api/stats'),
+          API('/api/properties?status=pending&limit=1'),
+          API('/api/contacts?limit=1')
+        ]);
+        const stats = await statsRes.json();
+        const propsData = await propsRes.json();
+        const msgsData = await msgsRes.json();
+
+        document.getElementById('statTotal').textContent = stats.total_properties || 0;
+        document.getElementById('statPending').textContent = propsData.pagination?.total || 0;
+        document.getElementById('statUsers').textContent = stats.users || 0;
+        document.getElementById('statMessages').textContent = msgsData.pagination?.total || 0;
+      } catch(e) { console.error('Stats error', e); }
+    }
+
+    // Load recent properties
+    async function loadRecentProps() {
+      try {
+        const res = await API('/api/properties?status=all&limit=10&sort=newest');
+        const data = await res.json();
+        const props = data.properties || [];
+        const wrap = document.getElementById('recentPropsWrap');
+
+        if (!props.length) { wrap.innerHTML = '<div class="empty">No hay propiedades</div>'; return; }
+
+        let html = '<table><thead><tr><th>ID</th><th>Título</th><th>Tipo</th><th>Estado</th><th>Precio</th><th>Acciones</th></tr></thead><tbody>';
+        props.forEach(p => {
+          html += `<tr>
+            <td>#${p.id}</td>
+            <td><strong>${p.title||'—'}</strong></td>
+            <td>${p.property_type||'—'}</td>
+            <td>${statusBadge(p.status)}</td>
+            <td>${fmtPrice(p.price, p.currency)}</td>
+            <td>
+              <a href="https://alianza58.pages.dev/admin/editar-propiedad.html?id=${p.id}" class="btn-sm btn-edit">Editar</a>
+              <a href="https://alianza58.pages.dev/propiedad/${p.slug}" target="_blank" class="btn-sm btn-view">Ver</a>
+            </td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        wrap.innerHTML = html;
+      } catch(e) {
+        document.getElementById('recentPropsWrap').innerHTML = '<div class="empty">Error al cargar propiedades</div>';
+      }
+    }
+
+    // Load recent messages
+    async function loadRecentMsgs() {
+      try {
+        const res = await API('/api/contacts?limit=5');
+        const data = await res.json();
+        const msgs = data.contacts || [];
+        const wrap = document.getElementById('recentMsgsWrap');
+
+        if (!msgs.length) { wrap.innerHTML = '<div class="empty">No hay mensajes</div>'; return; }
+
+        let html = '';
+        msgs.forEach(m => {
+          const initial = (m.name || '?').charAt(0).toUpperCase();
+          const unread = !m.is_read ? ' msg-unread' : '';
+          html += `<div class="msg-item${unread}">
+            <div class="msg-avatar">${initial}</div>
+            <div class="msg-body">
+              <div class="msg-name">${m.name||'—'}</div>
+              <div class="msg-text">${m.message||''}</div>
+              <div class="msg-meta">${m.email||''} · ${m.property_title ? m.property_title + ' · ' : ''}${fmtDate(m.created_at)}</div>
+            </div>
+          </div>`;
+        });
+        wrap.innerHTML = html;
+      } catch(e) {
+        document.getElementById('recentMsgsWrap').innerHTML = '<div class="empty">Error al cargar mensajes</div>';
+      }
+    }
+
+    // Load detailed stats
+    async function loadDetailedStats() {
+      try {
+        const res = await API('/api/properties?status=approved&limit=100');
+        const data = await res.json();
+        const props = data.properties || [];
+        const wrap = document.getElementById('statsDetailWrap');
+
+        // Calculate stats
+        const byType = {};
+        const byOp = {};
+        let totalViews = 0;
+        let totalValue = 0;
+        const cities = {};
+
+        props.forEach(p => {
+          byType[p.property_type || 'otro'] = (byType[p.property_type || 'otro'] || 0) + 1;
+          byOp[p.operation_type || 'venta'] = (byOp[p.operation_type || 'venta'] || 0) + 1;
+          totalViews += (p.views || 0);
+          totalValue += (p.price || 0);
+          if (p.city) cities[p.city] = (cities[p.city] || 0) + 1;
+        });
+
+        wrap.innerHTML = `
+          <div style="padding:22px;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
+              <div style="text-align:center;padding:16px;background:#f9f9f9;border-radius:8px;">
+                <div style="font-size:28px;font-weight:800;color:#C0392B;">${props.length}</div>
+                <div style="font-size:12px;color:#888;text-transform:uppercase;">Propiedades Activas</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:#f9f9f9;border-radius:8px;">
+                <div style="font-size:28px;font-weight:800;color:#000;">${totalViews.toLocaleString()}</div>
+                <div style="font-size:12px;color:#888;text-transform:uppercase;">Vistas Totales</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:#f9f9f9;border-radius:8px;">
+                <div style="font-size:28px;font-weight:800;color:#000;">$${totalValue.toLocaleString()}</div>
+                <div style="font-size:12px;color:#888;text-transform:uppercase;">Valor Total (USD)</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+              <div>
+                <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;">Por Tipo</h4>
+                ${Object.entries(byType).map(([t,c]) => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;"><span>${t}</span><strong>${c}</strong></div>`).join('')}
+              </div>
+              <div>
+                <h4 style="font-size:14px;font-weight:700;margin-bottom:12px;">Por Operación</h4>
+                ${Object.entries(byOp).map(([o,c]) => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;"><span>${o}</span><strong>${c}</strong></div>`).join('')}
+                <h4 style="font-size:14px;font-weight:700;margin:16px 0 12px;">Por Ciudad</h4>
+                ${Object.entries(cities).sort((a,b)=>b[1]-a[1]).map(([c,n]) => `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;"><span>${c}</span><strong>${n}</strong></div>`).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      } catch(e) {
+        document.getElementById('statsDetailWrap').innerHTML = '<div class="empty">Error al cargar estadísticas</div>';
+      }
+    }
+
+    // Load banner config
+    async function loadBanner() {
+      try {
+        const res = await fetch('/api/banner');
+        const data = await res.json();
+        const b = data.banner || {};
+        const wrap = document.getElementById('bannerWrap');
+        wrap.innerHTML = `
+          <div style="padding:22px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div class="form-group">
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Título del Banner</label>
+                <input type="text" id="bannerTitle" value="${b.title||''}" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:100%;" placeholder="Título principal">
+              </div>
+              <div class="form-group">
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Subtítulo</label>
+                <input type="text" id="bannerSubtitle" value="${b.subtitle||''}" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:100%;" placeholder="Subtítulo">
+              </div>
+              <div class="form-group">
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:6px;display:block;">URL de Imagen</label>
+                <input type="url" id="bannerImage" value="${b.image_url||''}" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:100%;" placeholder="https://...">
+              </div>
+              <div class="form-group">
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Enlace del Banner</label>
+                <input type="text" id="bannerLink" value="${b.link||'/propiedades'}" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:100%;" placeholder="/propiedades">
+              </div>
+              <div class="form-group">
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:6px;display:block;">Texto del Botón</label>
+                <input type="text" id="bannerLinkText" value="${b.link_text||'Ver Propiedades'}" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;width:100%;">
+              </div>
+              <div class="form-group" style="display:flex;align-items:end;">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;">
+                  <input type="checkbox" id="bannerEnabled" ${b.enabled!==false?'checked':''} style="width:18px;height:18px;">
+                  Banner activo
+                </label>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+              <button onclick="saveBanner()" style="padding:10px 24px;background:#C0392B;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Guardar Banner</button>
+            </div>
+          </div>
+        `;
+      } catch(e) {
+        document.getElementById('bannerWrap').innerHTML = '<div class="empty">Error al cargar banner</div>';
+      }
+    }
+
+    async function saveBanner() {
+      const banner = {
+        title: document.getElementById('bannerTitle').value,
+        subtitle: document.getElementById('bannerSubtitle').value,
+        image_url: document.getElementById('bannerImage').value,
+        link: document.getElementById('bannerLink').value,
+        link_text: document.getElementById('bannerLinkText').value,
+        enabled: document.getElementById('bannerEnabled').checked
+      };
+      try {
+        const res = await API('/api/banner', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(banner)
+        });
+        if (res.ok) {
+          const t = document.getElementById('toast');
+          t.textContent = 'Banner guardado correctamente';
+          t.className = 'toast success show';
+          setTimeout(() => t.classList.remove('show'), 3000);
+        }
+      } catch(e) { console.error(e); }
+    }
+
+    // Load settings (logo + watermark)
+    async function loadSettings() {
+      try {
+        const res = await fetch('/api/settings');
+        const s = await res.json();
+        const wrap = document.getElementById('settingsWrap');
+        wrap.innerHTML = `
+          <div style="padding:22px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:20px;">
+              <div>
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px;display:block;">Logo del Negocio</label>
+                <div id="siteLogoPreview" style="width:100%;height:80px;background:#f5f5f5;border:2px dashed #ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;">
+                  <img src="admin/${s.site_logo_url}.html" style="max-height:70px;max-width:100%;object-fit:contain;">
+                </div>
+                <input type="file" id="siteLogoFile" accept="image/*" style="font-size:13px;margin-bottom:6px;">
+                <input type="url" id="siteLogoUrl" value="${s.site_logo_url}" placeholder="URL del logo" style="padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:100%;margin-top:6px;">
+              </div>
+              <div>
+                <label style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px;display:block;">Logo de Marca de Agua</label>
+                <div id="wmLogoPreview" style="width:100%;height:80px;background:#f5f5f5;border:2px dashed #ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;">
+                  <img src="admin/${s.watermark_logo_url}.html" style="max-height:70px;max-width:100%;object-fit:contain;">
+                </div>
+                <input type="file" id="wmLogoFile" accept="image/*" style="font-size:13px;margin-bottom:6px;">
+                <input type="url" id="wmLogoUrl" value="${s.watermark_logo_url}" placeholder="URL de marca de agua" style="padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:100%;margin-top:6px;">
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#f9f9f9;border-radius:8px;margin-bottom:16px;">
+              <div>
+                <div style="font-weight:600;font-size:14px;color:#000;">Marca de Agua en Fotos</div>
+                <div style="font-size:12px;color:#888;margin-top:2px;">Agrega el logo como marca de agua a todas las fotos de propiedades</div>
+              </div>
+              <label style="position:relative;display:inline-block;width:52px;height:28px;cursor:pointer;">
+                <input type="checkbox" id="wmEnabled" ${s.watermark_enabled?'checked':''} style="opacity:0;width:0;height:0;">
+                <span style="position:absolute;inset:0;background:#ccc;border-radius:28px;transition:.3s;"></span>
+                <span id="wmToggleSlider" style="position:absolute;left:${s.watermark_enabled?'24px':'3px'};bottom:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.3s;${s.watermark_enabled?'background:#C0392B;':''}"></span>
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#f9f9f9;border-radius:8px;margin-bottom:16px;">
+              <div>
+                <div style="font-weight:600;font-size:14px;color:#000;">Publicaciones de Usuarios</div>
+                <div style="font-size:12px;color:#888;margin-top:2px;">Permitir que usuarios registrados envíen propiedades (requieren aprobación admin)</div>
+              </div>
+              <label style="position:relative;display:inline-block;width:52px;height:28px;cursor:pointer;">
+                <input type="checkbox" id="submissionsEnabled" ${s.public_submissions_enabled?'checked':''} style="opacity:0;width:0;height:0;">
+                <span style="position:absolute;inset:0;background:#ccc;border-radius:28px;transition:.3s;"></span>
+                <span id="subToggleSlider" style="position:absolute;left:${s.public_submissions_enabled?'24px':'3px'};bottom:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.3s;${s.public_submissions_enabled?'background:#C0392B;':''}"></span>
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#f9f9f9;border-radius:8px;margin-bottom:16px;">
+              <div>
+                <div style="font-weight:600;font-size:14px;color:#000;">Teléfono de Contacto Visible</div>
+                <div style="font-size:12px;color:#888;margin-top:2px;">Se muestra en propiedades de terceros en lugar del teléfono del usuario</div>
+              </div>
+              <input type="text" id="adminPhone" value="${s.admin_phone||'04126942043'}" placeholder="0412-6942043" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:180px;text-align:right;">
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#f9f9f9;border-radius:8px;margin-bottom:16px;">
+              <div>
+                <div style="font-weight:600;font-size:14px;color:#000;">WhatsApp de Alianza 58</div>
+                <div style="font-size:12px;color:#888;margin-top:2px;">Número de WhatsApp (con código de país, sin +). Se usa en propiedades de terceros.</div>
+              </div>
+              <input type="text" id="adminWhatsapp" value="${s.admin_whatsapp||'584126942043'}" placeholder="584126942043" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;width:180px;text-align:right;">
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#fff8e1;border-radius:8px;margin-bottom:16px;border:1px solid #ffe082;">
+              <div>
+                <div style="font-weight:600;font-size:14px;color:#856404;">Propiedades Pendientes de Aprobación</div>
+                <div style="font-size:12px;color:#a8860a;margin-top:2px;">Propiedades enviadas por usuarios que esperan revisión</div>
+              </div>
+              <a href="admin/propiedades.html@status=pending.html" style="padding:10px 20px;background:#856404;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;"><span id="pendingCount">...</span> Ver Pendientes →</a>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+              <button onclick="saveSettings()" style="padding:10px 24px;background:#C0392B;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Guardar Configuración</button>
+            </div>
+          </div>
+        `;
+        // File preview listeners
+        document.getElementById('siteLogoFile').addEventListener('change', function() {
+ previewFile(this, 'siteLogoPreview', 'siteLogoUrl');
+        });
+        document.getElementById('wmLogoFile').addEventListener('change', function() {
+          previewFile(this, 'wmLogoPreview', 'wmLogoUrl');
+        });
+        document.getElementById('wmEnabled').addEventListener('change', function() {
+          const slider = document.getElementById('wmToggleSlider');
+          slider.style.left = this.checked ? '24px' : '3px';
+          slider.style.background = this.checked ? '#C0392B' : '#fff';
+        });
+        // Submissions toggle listener
+        document.getElementById('submissionsEnabled').addEventListener('change', function() {
+          const slider = document.getElementById('subToggleSlider');
+          slider.style.left = this.checked ? '24px' : '3px';
+          slider.style.background = this.checked ? '#C0392B' : '#fff';
+        });
+        // Load pending count
+        try {
+          const pcRes = await API('/api/properties?status=pending&limit=1');
+          const pcData = await pcRes.json();
+          const pcTotal = pcData.pagination?.total || 0;
+          document.getElementById('pendingCount').textContent = pcTotal + ' ';
+        } catch(e) { document.getElementById('pendingCount').textContent = ''; }
+      } catch(e) {
+        document.getElementById('settingsWrap').innerHTML = '<div class="empty">Error al cargar configuración</div>';
+      }
+    }
+
+    function previewFile(input, previewId, urlId) {
+ const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById(previewId).innerHTML = '<img src="admin/'%20+%20e.target.result%20+%20'.html" style="max-height:70px;max-width:100%;object-fit:contain;">';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function uploadAndgetUrl(fileInput) {
+      const file = fileInput.files[0];
+      if (!file) return null;
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('property_id', 'logos');
+      try {
+        const res = await API('/api/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        return data.url || null;
+      } catch(e) { return null; }
+    }
+
+    async function saveSettings() {
+      const btn = event.target;
+      btn.textContent = 'Guardando...';
+      btn.disabled = true;
+      try {
+        let siteLogoUrl = document.getElementById('siteLogoUrl').value;
+        let wmLogoUrl = document.getElementById('wmLogoUrl').value;
+        // Upload files if selected
+        const siteFile = document.getElementById('siteLogoFile');
+        const wmFile = document.getElementById('wmLogoFile');
+        if (siteFile.files[0]) {
+          const uploaded = await uploadAndgetUrl(siteFile);
+          if (uploaded) siteLogoUrl = uploaded;
+        }
+        if (wmFile.files[0]) {
+          const uploaded = await uploadAndgetUrl(wmFile);
+          if (uploaded) wmLogoUrl = uploaded;
+        }
+        const res = await API('/api/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            site_logo_url: siteLogoUrl,
+            watermark_logo_url: wmLogoUrl,
+            watermark_enabled: document.getElementById('wmEnabled').checked,
+            public_submissions_enabled: document.getElementById('submissionsEnabled').checked,
+            admin_phone: document.getElementById('adminPhone').value.trim() || '04126942043',
+            admin_whatsapp: document.getElementById('adminWhatsapp').value.trim() || '584126942043'
+          })
+        });
+        if (res.ok) {
+          btn.textContent = 'Guardar Configuración';
+          btn.disabled = false;
+          alert('Configuración guardada correctamente');
+          loadSettings();
+        } else {
+          throw new Error('Error guardando');
+        }
+      } catch(e) {
+        btn.textContent = 'Guardar Configuración';
+        btn.disabled = false;
+        alert('Error al guardar: ' + e.message);
+      }
+    }
+
+    loadSettings();
+    loadDetailedStats();
+    loadBanner();
+    loadStats();
+    loadRecentProps();
+    loadRecentMsgs();
+
+    // Load pending badge in sidebar
+    (async function() {
+      try {
+        const res = await API('/api/properties?status=pending&limit=1');
+        const data = await res.json();
+        const total = data.pagination?.total || 0;
+        const badge = document.getElementById('sidebarPendingBadge');
+        if (badge) badge.textContent = total;
+      } catch(e) {}
+    })();
+  </script>
+</body>
+</html>

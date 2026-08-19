@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alianza 58 Bienes Raíces - Compra, venta y arrendamiento de inmuebles en Barinas. Casas, apartamentos, terrenos, locales comerciales.">
+  <title>Alianza 58 | Bienes Raíces en Venezuela - Casas, Apartamentos, Terrenos</title>
+  <link rel="canonical" href="index.html">
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/logo-192.png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Alianza 58 | Bienes Raíces en Venezuela - Casas, Apartamentos, Terrenos">
+  <meta property="og:description" content="Compra, venta y arrendamiento de inmuebles en Barinas. Casas, apartamentos, terrenos, locales comerciales.">
+  <meta property="og:image" content="https://alianza58.pages.dev/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg">
+  <meta property="og:url" content="https://alianza58.pages.dev/">
+  <meta property="og:site_name" content="Alianza 58 Bienes Raíces C.A.">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Alianza 58 | Bienes Raíces en Venezuela">
+  <meta name="twitter:description" content="Compra, venta y arrendamiento de inmuebles en Barinas.">
+  <meta name="twitter:image" content="https://alianza58.pages.dev/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg">
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+
+  <!-- JSON-LD: LocalBusiness -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Alianza 58 Bienes Raíces C.A.",
+    "url": "https://alianza58.pages.dev/",
+    "telephone": "+584126942043",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Barinas",
+      "addressRegion": "Barinas",
+      "addressCountry": "VE"
+    },
+    "areaServed": [
+      {"@type": "State","name": "Barinas"}
+    ],
+    "priceRange": "$$"
+  }
+  </script>
+
+  <!-- JSON-LD: WebSite with SearchAction -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Alianza 58 Bienes Raíces",
+    "url": "https://alianza58.pages.dev/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://alianza58.pages.dev/propiedades?q={search_term}",
+      "query-input": "required name=search_term"
+    }
+  }
+  </script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="ls-content">
+      <div class="logo-assembly" id="logoAssembly"></div>
+      <div class="loading-subtitle">Bienes Raíces</div>
+      <div class="loading-screen-spinner"></div>
+    </div>
+    <div class="scanline-overlay"></div>
+    <div class="assembly-glow" id="assemblyGlow"></div>
+    <canvas id="particleCanvas"></canvas>
+  </div>
+
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- ============ HEADER / NAV ============ -->
+  <header id="mainHeader">
+    <nav class="navbar">
+      <a href="index.html" class="logo" aria-label="Alianza 58 Inicio">
+        <img src="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58 Bienes Raíces" class="logo-img">
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Inicio</a></li>
+        <li><a href="propiedades.html">Propiedades</a></li>
+        <li class="dropdown">
+          <a href="servicios.html">Servicios <i class="fa-solid fa-chevron-down"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="servicios/venta.html">Venta</a></li>
+            <li><a href="servicios/alquiler.html">Alquiler</a></li>
+            <li><a href="servicios/tasacion.html">Tasación</a></li>
+          </ul>
+        </li>
+
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="tel:04126942043" class="nav-phone">
+          <i class="fa-solid fa-phone"></i> 0412-6942043
+        </a>
+        <a href="cuenta/publicar.html" class="nav-cta">Publicar Propiedad</a>
+        <a href="admin.html" class="nav-admin">Admin</a>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="propiedades.html">Propiedades</a></li>
+        <li><a href="servicios/venta.html">Servicios: Venta</a></li>
+        <li><a href="servicios/alquiler.html">Servicios: Alquiler</a></li>
+        <li><a href="servicios/tasacion.html">Servicios: Tasación</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+      </ul>
+      <div class="mobile-menu-contact">
+        <a href="cuenta/publicar.html" class="btn-whatsapp-mobile" style="background:#C0392B;">
+          <i class="fa-solid fa-plus"></i> Publicar Propiedad
+        </a>
+        <a href="tel:04126942043"><i class="fa-solid fa-phone"></i> 0412-6942043</a>
+        <a href="https://wa.me/584126942043?text=Hola%2C%20me%20interesa%20una%20propiedad" class="btn-whatsapp-mobile">
+          <i class="fa-brands fa-whatsapp"></i> Escríbenos por WhatsApp
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO SECTION ============ -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-badge">🟢 Bienes Raíces Ca.</span>
+      <h1>Compra, Venta y Arriendo de Inmuebles en Barinas</h1>
+      <p class="hero-subtitle">Tu inmobiliaria de confianza en Barinas — Encuentra casas, apartamentos, terrenos y más</p>
+
+      <form action="propiedades.html" method="GET" class="hero-search">
+        <div class="search-row">
+          <select name="tipo">
+            <option value="">Tipo</option>
+            <option value="casa">Casa</option>
+            <option value="apartamento">Apartamento</option>
+            <option value="terreno">Terreno</option>
+            <option value="local">Local Comercial</option>
+            <option value="oficina">Oficina</option>
+            <option value="finca">Finca</option>
+          </select>
+          <select name="operacion">
+            <option value="">Operación</option>
+            <option value="venta">Venta</option>
+            <option value="arrendamiento">Arrendamiento</option>
+          </select>
+        </div>
+        <div class="search-row">
+          <input type="text" name="q" placeholder="Buscar por código, dirección o descripción...">
+          <button type="submit" class="btn-search">Buscar Propiedades</button>
+        </div>
+        <div class="search-quick-links">
+          <a href="propiedades.html">Ver todos</a>
+          <a href="propiedades@destacado=true.html">Destacados</a>
+          <a href="propiedades@orden=recientes.html">Últimos publicados</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED PROPERTIES ============ -->
+  <section class="section featured-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Propiedades Destacadas</h2>
+        <a href="propiedades.html" class="view-all">Ver todas <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="content-loading" id="featuredSpinner">
+        <div class="spinner"></div>
+        <p>Cargando propiedades...</p>
+      </div>
+      <div class="properties-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES SECTION ============ -->
+  <section class="section services-section">
+    <div class="container">
+      <h2 class="section-title">Nuestros Servicios</h2>
+      <div class="services-grid">
+        <article class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-house"></i></div>
+          <h3>Venta de Inmuebles</h3>
+          <p>Encuentra tu propiedad ideal con nuestra amplia oferta de casas, apartamentos, terrenos y locales comerciales en toda Venezuela.</p>
+          <a href="servicios/venta.html" class="service-link">Más info <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+        <article class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-key"></i></div>
+          <h3>Arrendamiento</h3>
+          <p>Alquila con seguridad y confianza. Te ofrecemos opciones verificadas y acompañamiento legal en todo el proceso de arrendamiento.</p>
+          <a href="servicios/alquiler.html" class="service-link">Más info <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+        <article class="service-card">
+          <div class="service-icon"><i class="fa-solid fa-handshake"></i></div>
+          <h3>Asesoría Inmobiliaria</h3>
+          <p>Expertos a tu servicio. Tasaciones profesionales, evaluación de mercado y asesoría legal para tus transacciones inmobiliarias.</p>
+          <a href="servicios/tasacion.html" class="service-link">Más info <i class="fa-solid fa-arrow-right"></i></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS SECTION ============ -->
+  <section class="section stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number" data-target="0" id="statProperties">0</span>
+          <span class="stat-label">Propiedades</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">Barinas</span>
+          <span class="stat-label">Zona de Cobertura</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="500">0</span>
+          <span class="stat-label">Clientes Felices</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" data-target="10">0</span>
+          <span class="stat-label">Años de Experiencia</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MAP SECTION ============ -->
+  <section class="section map-section">
+    <div class="container">
+      <h2 class="section-title">Mapa de Propiedades</h2>
+      <div id="homeMap" class="map-container"></div>
+      <a href="propiedades@mapa=true.html" class="view-all" style="margin-top:1rem;display:inline-block;">Ver Mapa Completo <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </section>
+
+  <!-- ============ WHY CHOOSE US SECTION ============ -->
+  <section class="section why-section">
+    <div class="container">
+      <h2 class="section-title">¿Por qué elegir Alianza 58?</h2>
+      <div class="values-grid">
+        <article class="value-card">
+          <div class="value-icon"><i class="fa-solid fa-award"></i></div>
+          <h3>Experiencia Comprobada</h3>
+          <p>Años de trayectoria en el mercado inmobiliario de Barinas y Venezuela, con resultados que respaldan nuestro trabajo.</p>
+        </article>
+        <article class="value-card">
+          <div class="value-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+          <h3>Portafolio Nacional</h3>
+          <p>Propiedades disponibles en los 24 estados del país, con presencia activa y red de contactos en cada región.</p>
+        </article>
+        <article class="value-card">
+          <div class="value-icon"><i class="fa-solid fa-headset"></i></div>
+          <h3>Atención Personalizada</h3>
+          <p>Asesoramiento dedicado desde tu primera consulta hasta la firma final, adaptado a tus necesidades reales.</p>
+        </article>
+        <article class="value-card">
+          <div class="value-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>Transparencia Total</h3>
+          <p>Procesos claros, documentación verificada y comunicación abierta en cada etapa de la transacción.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA SECTION ============ -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>¿Tienes una propiedad para vender o alquilar?</h2>
+      <p>Publica tu inmueble de forma gratuita y llega a miles de interesados en todo el país.</p>
+      <a href="cuenta/registro.html" class="btn-cta">Publica tu propiedad gratis</a>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIOS ============ -->
+  <section class="section" style="background:#fff;">
+    <div class="container">
+      <h2 class="section-title" style="text-align:center;margin-bottom:8px;">Lo que dicen nuestros clientes</h2>
+      <p style="text-align:center;color:#666;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto;">Miles de personas han confiado en Alianza 58 para comprar, vender o alquilar su propiedad.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:1000px;margin:0 auto;">
+        <div style="background:#f9fafb;border-radius:12px;padding:24px;border:1px solid #e5e7eb;">
+          <div style="display:flex;gap:4px;color:#f59e0b;margin-bottom:12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p style="color:#444;line-height:1.7;margin-bottom:16px;font-style:italic;">"Excelente servicio, encontré mi casa soñada en menos de 2 semanas. El equipo de Alianza 58 fue muy profesional y transparente durante todo el proceso."</p>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;border-radius:50%;background:#C0392B;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;">MC</div><div><strong style="color:#1a1a2e;display:block;">María Camacho</strong><span style="color:#888;font-size:.85rem;">Compradora — Barinas</span></div></div>
+        </div>
+        <div style="background:#f9fafb;border-radius:12px;padding:24px;border:1px solid #e5e7eb;">
+          <div style="display:flex;gap:4px;color:#f59e0b;margin-bottom:12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+          <p style="color:#444;line-height:1.7;margin-bottom:16px;font-style:italic;">"Alquilé mi local comercial a través de Alianza 58 y fue la mejor decisión. Me consiguieron inquilinos confiables y el contrato lo revisaron todo el equipo legal."</p>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;border-radius:50%;background:#2563eb;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;">JR</div><div><strong style="color:#1a1a2e;display:block;">José Rodríguez</strong><span style="color:#888;font-size:.85rem;">Propietario — Barinas</span></div></div>
+        </div>
+        <div style="background:#f9fafb;border-radius:12px;padding:24px;border:1px solid #e5e7eb;">
+          <div style="display:flex;gap:4px;color:#f59e0b;margin-bottom:12px;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+          <p style="color:#444;line-height:1.7;margin-bottom:16px;font-style:italic;">"La tasación que me hicieron fue muy detallada y profesional. Me ayudó a poner el precio justo en mi propiedad y se vendió rápidamente. Muy recomendados."</p>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;border-radius:50%;background:#059669;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;">LP</div><div><strong style="color:#1a1a2e;display:block;">Laura Pérez</strong><span style="color:#888;font-size:.85rem;">Vendedora — Mérida</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-about">
+          <a href="index.html" class="footer-logo"><img src="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58" class="footer-logo-img"></a>
+          <p>Alianza 58 Bienes Raíces C.A. Brindamos asesoría inmobiliaria integral con presencia en Barinas y los 24 estados de Venezuela.</p>
+          <div class="footer-social">
+            <a href="index.html#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="index.html#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/584126942043" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="propiedades.html">Propiedades</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <ul>
+            <li><i class="fa-solid fa-phone"></i> 0412-6942043</li>
+            <li><i class="fa-solid fa-envelope"></i> info@alianza58.com</li>
+            <li><i class="fa-solid fa-location-dot"></i> Barinas, Venezuela</li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="privacidad.html">Política de Privacidad</a></li>
+            <li><a href="terminos.html">Términos y Condiciones</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Alianza 58 Bienes Raíces C.A. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Google Business Profile Button -->
+  <a href="https://www.google.com/maps/place/Alianza+58,+%F0%9F%9F%A2+Bienes+raices+Ca./@8.6239,-70.2184,15z/"
+     class="google-float" aria-label="Ver en Google" title="Ver perfil en Google">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+  </a>
+
+  <!-- ============ WHATSAPP FLOATING BUTTON ============ -->
+  <a href="https://wa.me/584126942043?text=Hola%2C%20me%20interesa%20una%20propiedad"
+     class="whatsapp-float" aria-label="Escríbenos por WhatsApp" title="Escríbenos por WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // ── EPIC LOGO ASSEMBLY ANIMATION ──────────────────────
+    (function() {
+      var container = document.getElementById('logoAssembly');
+      if (!container) return;
+      var LOGO_SRC = 'images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg';
+      var COLS = 5, ROWS = 4; // 20 fragments
+      var IMG_W = 1280, IMG_H = 934;
+
+      // Scatter configs: each fragment flies from a unique direction
+      var scatters = [
+        {sx:-320,sy:-280,sr:-50},{sx:350,sy:-300,sr:65},{sx:-280,sy:320,sr:-35},{sx:300,sy:280,sr:55},
+        {sx:-350,sy:200,sr:-70},{sx:380,sy:-180,sr:80},{sx:-200,sy:-350,sr:-45},{sx:260,sy:340,sr:60},
+        {sx:340,sy:-250,sr:-55},{sx:-300,sy:300,sr:75},{sx:280,sy:-340,sr:-40},{sx:-340,sy:-220,sr:50},
+        {sx:360,sy:260,sr:-65},{sx:-260,sy:-360,sr:70},{sx:320,sy:300,sr:-80},{sx:-380,sy:240,sr:45},
+        {sx:250,sy:-320,sr:-60},{sx:-310,sy:350,sr:85},{sx:370,sy:-270,sr:-30},{sx:-270,sy:280,sr:55}
+      ];
+
+      // Create fragments dynamically
+      for (var r = 0; r < ROWS; r++) {
+        for (var c = 0; c < COLS; c++) {
+          var idx = r * COLS + c;
+          var s = scatters[idx % scatters.length];
+          var frag = document.createElement('div');
+          frag.className = 'logo-frag';
+
+          // clip-path: inset(top right bottom left)
+          var clipT = (r / ROWS * 100).toFixed(2) + '%';
+          var clipB = ((1 - (r + 1) / ROWS) * 100).toFixed(2) + '%';
+          var clipL = (c / COLS * 100).toFixed(2) + '%';
+          var clipR = ((1 - (c + 1) / COLS) * 100).toFixed(2) + '%';
+
+          frag.style.cssText =
+            '--sx:' + s.sx + 'px;--sy:' + s.sy + 'px;--sr:' + s.sr + 'deg;' +
+            '--clip-top:' + clipT + ';--clip-right:' + clipR + ';--clip-bottom:' + clipB + ';--clip-left:' + clipL + ';';
+
+          var img = document.createElement('img');
+          img.src = LOGO_SRC;
+          img.alt = '';
+          frag.appendChild(img);
+          container.appendChild(frag);
+
+          // Stagger: diagonal wave from top-left to bottom-right
+          var delay = (r * 0.07 + c * 0.09 + 0.3);
+          frag.style.animation = 'fragAssemble 1.6s cubic-bezier(.22,.61,.36,1) ' + delay.toFixed(2) + 's forwards';
+        }
+      }
+
+      // When all fragments done → fire glow + subtitle + spinner
+      var totalDuration = ((ROWS - 1) * 0.07 + (COLS - 1) * 0.09 + 0.3 + 1.6) * 1000;
+      setTimeout(function() {
+        var glow = document.getElementById('assemblyGlow');
+        if (glow) glow.classList.add('fire');
+        var sub = document.querySelector('.loading-subtitle');
+        if (sub) sub.classList.add('show');
+        var spin = document.querySelector('.loading-screen-spinner');
+        if (spin) spin.classList.add('show');
+        initParticles();
+      }, totalDuration);
+
+      // ── Particle System ──────────────────────
+      function initParticles() {
+        var canvas = document.getElementById('particleCanvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var W, H, particles = [], animId;
+
+        function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+
+        var cx = W / 2, cy = H / 2;
+        var colors = ['#C0392B','#E74C3C','#FF6B6B','#ffffff','#ff9f43','#feca57'];
+        for (var i = 0; i < 100; i++) {
+          var angle = Math.random() * Math.PI * 2;
+          var speed = 2 + Math.random() * 6;
+          particles.push({
+            x: cx + (Math.random() - 0.5) * 140,
+            y: cy + (Math.random() - 0.5) * 100,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 1,
+            decay: 0.004 + Math.random() * 0.012,
+            size: 1 + Math.random() * 3.5,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            delay: Math.floor(Math.random() * 80),
+            frame: 0,
+            gravity: 0.015 + Math.random() * 0.03
+          });
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, W, H);
+          var alive = false;
+          for (var i = 0; i < particles.length; i++) {
+            var p = particles[i];
+            p.frame++;
+            if (p.frame < p.delay) { alive = true; continue; }
+            if (p.life <= 0) continue;
+            alive = true;
+            p.x += p.vx; p.y += p.vy; p.vy += p.gravity; p.vx *= 0.99; p.life -= p.decay;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, p.life);
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+          if (alive) { animId = requestAnimationFrame(draw); }
+          else { ctx.clearRect(0, 0, W, H); }
+        }
+        draw();
+
+        var obs = new MutationObserver(function() {
+          if (document.getElementById('loadingScreen') && document.getElementById('loadingScreen').classList.contains('hidden')) {
+            cancelAnimationFrame(animId);
+            obs.disconnect();
+          }
+        });
+        obs.observe(document.getElementById('loadingScreen'), { attributes: true, attributeFilter: ['class'] });
+      }
+    })();
+
+    // ── Dismiss loading screen after animation completes ──────────────
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        var ls = document.getElementById('loadingScreen');
+        if (ls) ls.classList.add('hidden');
+        setTimeout(function() { if (ls) ls.remove(); }, 900);
+      }, 4200);
+    });
+
+    // Load dynamic banner from admin API
+    (async function loadBanner() {
+      try {
+        const res = await fetch('/api/banner');
+        const data = await res.json();
+        const b = data.banner;
+        if (!b || !b.enabled) return;
+        
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        
+        if (b.image_url) {
+          const bgImg = document.createElement('img');
+          bgImg.className = 'hero-bg';
+          bgImg.src = b.image_url;
+          bgImg.alt = b.title || 'Banner Alianza 58';
+          bgImg.loading = 'eager';
+          hero.prepend(bgImg);
+        }
+        if (b.title) {
+          const h1 = hero.querySelector('h1');
+          if (h1) h1.textContent = b.title;
+        }
+        if (b.subtitle) {
+          const sub = hero.querySelector('.hero-subtitle');
+          if (sub) sub.textContent = b.subtitle;
+        }
+        if (b.link && b.link_text) {
+          const badge = hero.querySelector('.hero-badge');
+          if (badge) {
+            badge.innerHTML = '<a href="'%20+%20b.link%20+%20'.html" style="color:#fff;text-decoration:none;background:rgba(192,57,43,0.9);padding:8px 20px;border-radius:30px;font-weight:600;font-size:0.85rem;display:inline-block;margin-top:4px;">' + b.link_text + ' →</a>';
+          }
+        }
+      } catch(e) { /* Banner API not available, show defaults */ }
+    })();
+  </script>
+</body>
+</html>

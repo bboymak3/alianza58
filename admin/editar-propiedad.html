@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propiedad | Alianza 58 Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e8e8e8; color: #000; display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px; background: #1a1a1a; color: #ccc; display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.3s;
+    }
+    .sidebar-logo {
+      padding: 20px 22px; border-bottom: 1px solid #333; font-size: 20px; font-weight: 800;
+      color: #fff; text-decoration: none; letter-spacing: -0.5px;
+    }
+    .sidebar-logo span { color: #C0392B; }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 12px; padding: 12px 22px; color: #aaa;
+      text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { background: #262626; color: #fff; }
+    .sidebar-nav a.active { background: #262626; color: #fff; border-left-color: #C0392B; }
+    .sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 22px; border-top: 1px solid #333; }
+    .btn-logout {
+      width: 100%; padding: 10px; background: transparent; border: 1px solid #555; color: #ccc;
+      border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: #C0392B; color: #C0392B; }
+
+    /* MOBILE */
+    .mobile-toggle {
+      display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+      width: 40px; height: 40px; background: #1a1a1a; border: none; border-radius: 8px;
+      color: #fff; font-size: 20px; cursor: pointer;
+    }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+
+    /* MAIN */
+    .main { flex: 1; margin-left: 250px; min-height: 100vh; }
+    .topbar {
+      background: #fff; padding: 16px 28px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .btn-cancel {
+      padding: 9px 20px; background: transparent; border: 1px solid #ccc; border-radius: 8px;
+      font-size: 14px; font-weight: 500; cursor: pointer; color: #555; text-decoration: none; transition: all 0.15s;
+    }
+    .btn-cancel:hover { border-color: #333; color: #333; }
+    .btn-save {
+      padding: 9px 24px; background: #C0392B; color: #fff; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-save:hover { background: #a93226; }
+    .btn-save:disabled { background: #e0a89f; cursor: not-allowed; }
+
+    .content { padding: 28px; max-width: 860px; }
+
+    /* SECTIONS */
+    .form-section {
+      background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      margin-bottom: 24px; overflow: hidden;
+    }
+    .form-section-header {
+      padding: 16px 22px; border-bottom: 1px solid #eee; font-size: 15px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .form-section-header .icon { font-size: 18px; }
+    .form-section-body { padding: 22px; }
+
+    /* FORM */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label {
+      font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;
+      color: #000; background: #fafafa; transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none; border-color: #C0392B; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); background: #fff;
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group input[readonly] { background: #f0f0f0; color: #888; }
+
+    /* CHECKBOX */
+    .checkbox-group { display: flex; align-items: center; gap: 8px; }
+    .checkbox-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: #C0392B; }
+    .checkbox-group label { font-size: 14px; font-weight: 500; color: #333; margin-bottom: 0; cursor: pointer; }
+
+    /* UPLOAD AREA */
+    .upload-area {
+      border: 2px dashed #ccc; border-radius: 10px; padding: 36px; text-align: center;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s; color: #888;
+    }
+    .upload-area:hover, .upload-area.dragover { border-color: #C0392B; background: rgba(192,57,43,0.03); color: #C0392B; }
+    .upload-area p { font-size: 14px; margin-top: 8px; }
+    .upload-area .icon { font-size: 32px; }
+
+    /* GALLERY */
+    .gallery { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+    .gallery-item {
+      position: relative; width: 120px; height: 90px; border-radius: 8px; overflow: hidden;
+      border: 2px solid #eee; cursor: pointer; transition: border-color 0.15s;
+    }
+    .gallery-item.cover { border-color: #C0392B; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-item .cover-badge {
+      position: absolute; top: 4px; left: 4px; background: #C0392B; color: #fff; font-size: 9px;
+      padding: 2px 6px; border-radius: 4px; font-weight: 700;
+    }
+    .gallery-item .remove-img {
+      position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(0,0,0,0.6); color: #fff; border: none; font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s;
+    }
+    .gallery-item:hover .remove-img { opacity: 1; }
+
+    /* LOADING OVERLAY */
+    .loading-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 600;
+      align-items: center; justify-content: center;
+    }
+    .loading-overlay.show { display: flex; }
+    .loading-box {
+      background: #fff; padding: 28px 36px; border-radius: 12px; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .spinner { width: 32px; height: 32px; border: 3px solid #eee; border-top-color: #C0392B; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; color: #fff; z-index: 999; transform: translateY(80px);
+      opacity: 0; transition: all 0.3s; pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #155724; }
+    .toast.error { background: #C0392B; }
+
+    @media (max-width: 768px) {
+      .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; }
+      .content { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <link rel="icon" href="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+</head>
+<body>
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="../index.html" class="sidebar-logo" style="display:flex;align-items:center;gap:8px;"><img src="../images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="A58" style="height:28px;width:auto;border-radius:4px;"> Admin</a>
+    <nav class="sidebar-nav">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+        Dashboard
+      </a>
+      <a href="propiedades.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Propiedades
+      </a>
+      <a href="usuarios.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Usuarios
+      </a>
+      <a href="editar-propiedad.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Mensajes
+      </a>
+      <a href="editar-propiedad.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        Estadísticas
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">Nueva Propiedad</h1>
+      <div class="topbar-right">
+        <a href="propiedades.html" class="btn-cancel">Cancelar</a>
+        <button class="btn-save" id="btnSave" onclick="saveProperty()">Guardar Propiedad</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <form id="propForm" onsubmit="return false">
+
+        <!-- Información Básica -->
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">📋</span> Información Básica</div>
+          <div class="form-section-body">
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="title">Título *</label>
+                <input type="text" id="title" name="title" placeholder="Ej: Casa en venta en Barinas centro" required oninput="generateSlug()">
+              </div>
+              <div class="form-group">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" name="slug" readonly>
+              </div>
+              <div class="form-group">
+                <label for="property_type">Tipo de Propiedad *</label>
+                <select id="property_type" name="property_type" required>
+                  <option value="casa">Casa</option>
+                  <option value="apartamento">Apartamento</option>
+                  <option value="terreno">Terreno</option>
+                  <option value="local_comercial">Local Comercial</option>
+                  <option value="oficina">Oficina</option>
+                  <option value="finca">Finca</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="operation_type">Operación *</label>
+                <select id="operation_type" name="operation_type" required>
+                  <option value="venta">Venta</option>
+                  <option value="arriendo">Arriendo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="price">Precio *</label>
+                <input type="number" id="price" name="price" step="0.01" min="0" placeholder="0.00" required>
+              </div>
+              <div class="form-group">
+                <label for="currency">Moneda</label>
+                <select id="currency" name="currency">
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="COP">COP ($)</option>
+                  <option value="VES">VES (Bs)</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label for="description">Descripción *</label>
+                <textarea id="description" name="description" rows="5" placeholder="Describe la propiedad en detalle..." required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ubicación -->
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">📍</span> Ubicación</div>
+          <div class="form-section-body">
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="address">Dirección</label>
+                <input type="text" id="address" name="address" placeholder="Calle, urbanización, referencia...">
+              </div>
+              <div class="form-group">
+                <label for="city">Ciudad *</label>
+                <input type="text" id="city" name="city" placeholder="Ej: Barinas" required>
+              </div>
+              <div class="form-group">
+                <label for="state">Estado *</label>
+                <select id="state" name="state" required>
+                  <option value="">Seleccionar...</option>
+                  <option value="Amazonas">Amazonas</option>
+                  <option value="Anzoátegui">Anzoátegui</option>
+                  <option value="Apure">Apure</option>
+                  <option value="Aragua">Aragua</option>
+                  <option value="Barinas">Barinas</option>
+                  <option value="Bolívar">Bolívar</option>
+                  <option value="Carabobo">Carabobo</option>
+                  <option value="Cojedes">Cojedes</option>
+                  <option value="Delta Amacuro">Delta Amacuro</option>
+                  <option value="Distrito Capital">Distrito Capital</option>
+                  <option value="Falcón">Falcón</option>
+                  <option value="Guárico">Guárico</option>
+                  <option value="Lara">Lara</option>
+                  <option value="Mérida">Mérida</option>
+                  <option value="Miranda">Miranda</option>
+                  <option value="Monagas">Monagas</option>
+                  <option value="Nueva Esparta">Nueva Esparta</option>
+                  <option value="Portuguesa">Portuguesa</option>
+                  <option value="Sucre">Sucre</option>
+                  <option value="Táchira">Táchira</option>
+                  <option value="Trujillo">Trujillo</option>
+                  <option value="Vargas">Vargas</option>
+                  <option value="Yaracuy">Yaracuy</option>
+                  <option value="Zulia">Zulia</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="lat">Latitud</label>
+                <input type="number" id="lat" name="lat" step="any" placeholder="8.6239">
+              </div>
+              <div class="form-group">
+                <label for="lng">Longitud</label>
+                <input type="number" id="lng" name="lng" step="any" placeholder="-70.2184">
+              </div>
+            </div>
+            <div style="margin-top:12px;padding:14px;background:#f7f7f7;border-radius:8px;font-size:13px;color:#888;text-align:center;">
+              🗺️ Integración con mapa disponible en futuras actualizaciones
+            </div>
+          </div>
+        </div>
+
+        <!-- Características -->
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">🏠</span> Características</div>
+          <div class="form-section-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="area">Área construida (m²)</label>
+                <input type="number" id="area" name="area" step="0.01" min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="bedrooms">Habitaciones</label>
+                <input type="number" id="bedrooms" name="bedrooms" min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="bathrooms">Baños</label>
+                <input type="number" id="bathrooms" name="bathrooms" min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="parking_spaces">Estacionamientos</label>
+                <input type="number" id="parking_spaces" name="parking_spaces" min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="floors">Pisos / Niveles</label>
+                <input type="number" id="floors" name="floors" min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="year_built">Año de construcción</label>
+                <input type="number" id="year_built" name="year_built" min="1900" max="2030" placeholder="2024">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">✨</span> Características Adicionales</div>
+          <div class="form-section-body">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" id="featuresGrid">
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="wifi"> WiFi / Internet
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="piscina"> Piscina
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="tanque_agua"> Tanque de Agua
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="bomba_agua"> Bomba de Agua
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="areas_verdes"> Áreas Verdes
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="estacionamiento"> Estacionamiento
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="vigilancia"> Vigilancia 24h
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="aire_acondicionado"> Aire Acondicionado
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="cocina_integral"> Cocina Integral
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="calentador"> Calentador de Agua
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="terraza"> Terraza / Balcón
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="parrillero"> Parrillero / Quincho
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="closet"> Closets / Armarios
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="porton_electrico"> Portón Eléctrico
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="energia_solar"> Energía Solar
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="pisos_ceramica"> Pisos de Cerámica
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="gas_domestico"> Gas Doméstico
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;font-size:13px;cursor:pointer;transition:background 0.15s;">
+                <input type="checkbox" name="features" value="electricidad"> Electricidad Estabilizada
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multimedia -->
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">🖼️</span> Multimedia</div>
+          <div class="form-section-body">
+            <div class="upload-area" id="uploadArea">
+              <div class="icon">📁</div>
+              <p>Arrastra imágenes aquí o haz clic para seleccionar</p>
+              <p style="font-size:12px;margin-top:4px;">JPG, PNG, WebP — Máx 5MB por imagen</p>
+              <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+              <button type="button" onclick="openCamera()" style="margin-top:10px;padding:10px 18px;background:#25D366;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                📷 Tomar Foto
+              </button>
+              <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none;" onchange="handleCameraPhoto(this)">
+            </div>
+            <div class="gallery" id="gallery"></div>
+            <div id="uploadPreview"></div>
+            <div class="form-group" style="margin-top:18px;">
+              <label for="youtube_url">URL de YouTube (video)</label>
+              <input type="url" id="youtube_url" name="youtube_url" placeholder="https://youtube.com/watch?v=...">
+            </div>
+          </div>
+        </div>
+
+        <!-- SEO -->
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">🔍</span> SEO</div>
+          <div class="form-section-body">
+            <div class="form-grid">
+              <div class="form-group full">
+                <label for="seo_title">Título SEO</label>
+                <input type="text" id="seo_title" name="seo_title" placeholder="Título para buscadores (opcional)">
+              </div>
+              <div class="form-group full">
+                <label for="seo_description">Descripción SEO</label>
+                <textarea id="seo_description" name="seo_description" rows="3" placeholder="Meta descripción para buscadores (máx 160 caracteres)"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado -->
+        <div class="form-section">
+          <div class="form-section-header"><span class="icon">⚙️</span> Estado</div>
+          <div class="form-section-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="status">Estado de publicación</label>
+                <select id="status" name="status">
+                  <option value="pending">Pendiente</option>
+                  <option value="approved">Aprobada</option>
+                  <option value="rejected">Rechazada</option>
+                  <option value="sold">Vendida</option>
+                  <option value="rented">Alquilada</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="expires_at">Fecha de expiración</label>
+                <input type="date" id="expires_at" name="expires_at">
+              </div>
+              <div class="form-group">
+                <div class="checkbox-group" style="margin-top:24px;">
+                  <input type="checkbox" id="featured" name="featured">
+                  <label for="featured">Marcar como propiedad destacada</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-box"><div class="spinner"></div><p id="loadingText">Guardando...</p></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Auth
+    (function checkAuth() {
+      const token = localStorage.getItem('a58_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+      try {
+        const p = JSON.parse(atob(token.split('.')[1]));
+        if (p.exp < Math.floor(Date.now()/1000) || p.role !== 'admin') {
+          localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user');
+          window.location.href = 'login.html'; return;
+        }
+      } catch(e) { window.location.href = 'login.html'; return; }
+    })();
+
+    const API = (path, opts = {}) => {
+      const token = localStorage.getItem('a58_token');
+      return fetch(path, { ...opts, headers: { ...opts.headers, 'Authorization': 'Bearer ' + token } });
+    };
+    function logout() { localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user'); window.location.href = 'login.html'; }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('open'); }
+
+    function toast(msg, type='success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast ' + type + ' show';
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+    function showLoading(msg) { document.getElementById('loadingText').textContent = msg || 'Guardando...'; document.getElementById('loadingOverlay').classList.add('show'); }
+    function hideLoading() { document.getElementById('loadingOverlay').classList.remove('show'); }
+
+    // Slugify
+    function slugify(text) {
+      return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'').substring(0,80);
+    }
+    function generateSlug() {
+      document.getElementById('slug').value = slugify(document.getElementById('title').value);
+    }
+
+    // Property ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const propertyId = urlParams.get('id');
+    let existingImages = []; // {id, image_url, is_cover, sort_order}
+    let coverImageId = null;
+    let newUploads = []; // URLs of newly uploaded images
+    let imageUrls = []; // Camera photos uploaded
+
+    // Set page title
+    if (propertyId) {
+      document.getElementById('pageTitle').textContent = 'Editar Propiedad';
+      document.getElementById('btnSave').textContent = 'Actualizar Propiedad';
+      loadProperty();
+    }
+
+    async function loadProperty() {
+      showLoading('Cargando propiedad...');
+      try {
+        const res = await API('/api/properties/' + propertyId);
+        const data = await res.json();
+        const p = data.property;
+        if (!p) { toast('Propiedad no encontrada', 'error'); hideLoading(); return; }
+
+        // Populate form
+        const fields = ['title','slug','description','property_type','operation_type','price','currency',
+          'address','city','state','lat','lng','area','bedrooms','bathrooms',
+          'parking_spaces','year_built','youtube_url','status','seo_title','seo_description','expires_at'];
+        fields.forEach(f => {
+          const el = document.getElementById(f);
+          if (el && p[f] !== null && p[f] !== undefined) el.value = p[f];
+        });
+
+        if (p.featured === 1 || p.featured === true) document.getElementById('featured').checked = true;
+
+        // Load features checkboxes
+        if (p.features) {
+          try {
+            const featArr = typeof p.features === 'string' ? JSON.parse(p.features) : p.features;
+            if (Array.isArray(featArr)) {
+              featArr.forEach(f => {
+                const cb = document.querySelector(`input[name="features"][value="${f}"]`);
+                if (cb) cb.checked = true;
+              });
+            }
+          } catch(e) {}
+        }
+
+        // Load images
+        if (p.images && p.images.length) {
+          existingImages = p.images;
+          const cover = p.images.find(i => i.is_cover === 1);
+          if (cover) coverImageId = cover.id;
+          renderGallery();
+        }
+        hideLoading();
+      } catch(e) {
+        toast('Error al cargar propiedad', 'error');
+        hideLoading();
+      }
+    }
+
+    // Image upload
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+    uploadArea.addEventListener('drop', (e) => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+    fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+    async function handleFiles(files) {
+      for (const file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        if (file.size > 5 * 1024 * 1024) { toast('Imagen demasiado grande (máx 5MB)', 'error'); continue; }
+        try {
+          const formData = new FormData();
+          formData.append('file', file);
+          const token = localStorage.getItem('a58_token');
+          const res = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: formData });
+          const data = await res.json();
+          if (data.url) {
+            newUploads.push(data.url);
+            renderGallery();
+          } else { toast('Error al subir imagen', 'error'); }
+        } catch(e) { toast('Error de conexión al subir', 'error'); }
+      }
+      fileInput.value = '';
+    }
+
+    function renderGallery() {
+      const g = document.getElementById('gallery');
+      let html = '';
+
+      // Existing images from DB
+      existingImages.forEach((img, i) => {
+        const isCover = img.id === coverImageId;
+        html += `<div class="gallery-item ${isCover?'cover':''}" onclick="setCover('existing',${img.id})" title="Clic para portada">
+          <img src="${img.image_url}.html" alt="">
+          ${isCover ? '<div class="cover-badge">PORTADA</div>' : ''}
+          <button class="remove-img" onclick="event.stopPropagation();removeExistingImage(${img.id})">✕</button>
+        </div>`;
+      });
+
+      // New uploads
+      newUploads.forEach((url, i) => {
+        const isCover = coverImageId === null && i === 0 && existingImages.length === 0;
+        html += `<div class="gallery-item ${isCover?'cover':''}" onclick="setCover('new',${i})" title="Clic para portada">
+          <img src="${url}.html" alt="">
+          ${isCover ? '<div class="cover-badge">PORTADA</div>' : ''}
+          <button class="remove-img" onclick="event.stopPropagation();removeNewImage(${i})">✕</button>
+        </div>`;
+      });
+
+      g.innerHTML = html;
+    }
+
+    function setCover(type, id) {
+ if (type === 'existing') { coverImageId = id; }
+      else { coverImageId = null; /* new image */ }
+      renderGallery();
+      // Mark new images: first one is cover if no existing cover
+      toast('Portada actualizada');
+    }
+
+    function removeExistingImage(id) {
+      existingImages = existingImages.filter(i => i.id !== id);
+      if (coverImageId === id) coverImageId = existingImages.length ? existingImages[0].id : null;
+      renderGallery();
+    }
+
+    function removeNewImage(index) {
+      newUploads.splice(index, 1);
+      renderGallery();
+    }
+
+    // Save
+    async function saveProperty() {
+      const title = document.getElementById('title').value.trim();
+      if (!title) { toast('El título es obligatorio', 'error'); return; }
+      if (!document.getElementById('city').value.trim()) { toast('La ciudad es obligatoria', 'error'); return; }
+      if (!document.getElementById('state').value) { toast('El estado es obligatorio', 'error'); return; }
+
+      showLoading('Guardando propiedad...');
+
+      const data = {
+        title,
+        slug: slugify(title),
+        description: document.getElementById('description').value.trim(),
+        property_type: document.getElementById('property_type').value,
+        operation_type: document.getElementById('operation_type').value,
+        price: parseFloat(document.getElementById('price').value) || 0,
+        currency: document.getElementById('currency').value,
+        address: document.getElementById('address').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        state: document.getElementById('state').value,
+        lat: document.getElementById('lat').value || null,
+        lng: document.getElementById('lng').value || null,
+        area: parseFloat(document.getElementById('area').value) || null,
+        bedrooms: parseInt(document.getElementById('bedrooms').value) || 0,
+        bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
+        parking_spaces: parseInt(document.getElementById('parking_spaces').value) || 0,
+        year_built: document.getElementById('year_built').value || null,
+        youtube_url: document.getElementById('youtube_url').value.trim() || null,
+        status: document.getElementById('status').value,
+        featured: document.getElementById('featured').checked ? 1 : 0,
+      };
+
+      // Collect features
+      const features = [];
+      document.querySelectorAll('input[name="features"]:checked').forEach(cb => features.push(cb.value));
+      data.features = JSON.stringify(features);
+
+      try {
+        let res;
+        if (propertyId) {
+          res = await API('/api/properties/' + propertyId, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+          });
+        } else {
+          res = await API('/api/properties', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
+          });
+        }
+
+        if (!res.ok) {
+          const err = await res.json();
+          toast(err.error || 'Error al guardar', 'error'); hideLoading(); return;
+        }
+
+        const result = await res.json();
+        const savedId = propertyId || result.property?.id;
+
+        // Handle new uploads - add as images via a simple approach
+        // The API doesn't have a dedicated image-attach endpoint, so we store URLs in features or handle via separate call
+        if (newUploads.length > 0 && savedId) {
+          // Images would need a separate endpoint. For now we note them.
+          console.log('New images to attach:', newUploads);
+        }
+
+        hideLoading();
+        toast(propertyId ? 'Propiedad actualizada' : 'Propiedad creada');
+        setTimeout(() => window.location.href = 'propiedades.html', 1000);
+      } catch(e) {
+        toast('Error de conexión', 'error'); hideLoading();
+      }
+    }
+    function openCamera() {
+      document.getElementById('cameraInput').click();
+    }
+    
+    function handleCameraPhoto(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const preview = document.getElementById('uploadPreview');
+        const token = localStorage.getItem('a58_token');
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.createElement('div');
+          img.style.cssText = 'position:relative;display:inline-block;margin:8px;';
+          img.innerHTML = `
+            <img src="${e.target.result}.html" style="width:120px;height:90px;object-fit:cover;border-radius:6px;border:2px solid #C0392B;">
+            <span style="position:absolute;top:-6px;right:-6px;background:#C0392B;color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;" onclick="this.parentElement.remove()">×</span>
+          `;
+          preview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+        
+        // Also upload to server
+        const formData = new FormData();
+        formData.append('file', file);
+        fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token },
+          body: formData
+        }).then(r => r.json()).then(data => {
+          if (data.url) {
+            imageUrls.push(data.url);
+            toast('Foto subida correctamente');
+          }
+        }).catch(err => toast('Error al subir foto', 'error'));
+      }
+    }
+  </script>
+</body>
+</html>

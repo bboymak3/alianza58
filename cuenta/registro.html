@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Cuenta | Alianza 58 Bienes Raíces</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f0f0f0; }
+    .btn-primary { background-color: #C0392B; transition: background-color 0.2s; }
+    .btn-primary:hover { background-color: #a93226; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+    .auth-card { box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+    .input-field { border: 1px solid #d1d5db; transition: border-color 0.2s, box-shadow 0.2s; background: #fafafa; }
+    .input-field:focus { border-color: #C0392B; outline: none; box-shadow: 0 0 0 3px rgba(192,57,43,0.1); background: #fff; }
+    .input-error { border-color: #ef4444 !important; }
+    .field-error { color: #ef4444; font-size: 12px; margin-top: 4px; display: none; }
+    .alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; }
+    .alert-error { background: #fde8e8; color: #c0392b; border: 1px solid #f5c6cb; }
+    .alert-success { background: #e8f8f0; color: #27ae60; border: 1px solid #c3e6d1; }
+    .spinner { display: none; width: 18px; height: 18px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .strength-bar { height: 4px; border-radius: 2px; transition: width 0.3s, background 0.3s; }
+    .divider { display: flex; align-items: center; margin: 20px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e5e7eb; }
+    .divider span { padding: 0 12px; font-size: 12px; color: #9ca3af; }
+    .home-icon { opacity: 0.06; }
+    .benefit { display: flex; align-items: flex-start; gap: 12px; }
+    .benefit-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  </style>
+  <link rel="icon" href="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden">
+  <!-- Decorative background icon -->
+  <div class="home-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-96 w-96" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </div>
+  <div class="w-full max-w-md relative z-10">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <a href="../index.html" class="text-3xl font-bold text-gray-900 tracking-tight">
+        
+      </a>
+      <p class="text-gray-500 text-sm mt-1">Bienes Raíces</p>
+    </div>
+    <!-- Card -->
+    <div class="auth-card bg-white rounded-2xl p-8">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Crear Cuenta</h1>
+      <p class="text-gray-500 text-sm mb-6">Publica y gestiona tus propiedades</p>
+      <div id="alert" class="alert"></div>
+      <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="name">Nombre Completo *</label>
+          <input type="text" id="name" class="input-field w-full px-4 py-3 rounded-lg text-sm" placeholder="Juan Pérez" required autocomplete="name">
+          <p id="nameError" class="field-error">El nombre es obligatorio</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="email">Correo Electrónico *</label>
+          <input type="email" id="email" class="input-field w-full px-4 py-3 rounded-lg text-sm" placeholder="tu@email.com" required autocomplete="email">
+          <p id="emailError" class="field-error">Ingresa un correo válido</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="phone">Teléfono *</label>
+          <input type="tel" id="phone" class="input-field w-full px-4 py-3 rounded-lg text-sm" placeholder="0412-6942043" required autocomplete="tel">
+          <p id="phoneError" class="field-error">Ingresa un teléfono válido</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="password">Contraseña *</label>
+          <input type="password" id="password" class="input-field w-full px-4 py-3 rounded-lg text-sm" placeholder="Mínimo 6 caracteres" required oninput="checkStrength(this.value)">
+          <div class="mt-2 flex gap-1">
+            <div class="strength-bar bg-gray-200 flex-1" id="str1"></div>
+            <div class="strength-bar bg-gray-200 flex-1" id="str2"></div>
+            <div class="strength-bar bg-gray-200 flex-1" id="str3"></div>
+          </div>
+          <p id="strengthText" class="text-xs text-gray-400 mt-1"></p>
+          <p id="passwordError" class="field-error">Mínimo 6 caracteres</p>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1" for="confirmPassword">Confirmar Contraseña *</label>
+          <input type="password" id="confirmPassword" class="input-field w-full px-4 py-3 rounded-lg text-sm" placeholder="Repite tu contraseña" required>
+          <p id="confirmError" class="field-error">Las contraseñas no coinciden</p>
+        </div>
+        <div class="mb-6">
+          <label class="flex items-start text-sm text-gray-600 cursor-pointer select-none">
+            <input type="checkbox" id="terms" class="mt-0.5 mr-2 rounded border-gray-300 text-red-600 focus:ring-red-500" required>
+            <span>Acepto los <a href="../terminos.html" class="font-medium hover:underline" style="color:#C0392B">Términos y Condiciones</a></span>
+          </label>
+          <p id="termsError" class="field-error">Debes aceptar los términos</p>
+        </div>
+        <button type="submit" id="submitBtn" class="btn-primary w-full text-white font-semibold py-3 rounded-lg flex items-center justify-center text-sm">
+          <span id="btnText">Registrarme</span>
+          <div id="btnSpinner" class="spinner ml-2"></div>
+        </button>
+      </form>
+      <div class="divider"><span>o</span></div>
+      <div class="mt-4 text-center">
+        <p class="text-sm text-gray-500">¿Ya tienes cuenta? <a href="login.html" class="font-semibold hover:underline" style="color:#C0392B">Iniciar Sesión</a></p>
+      </div>
+    </div>
+    <!-- Benefits -->
+    <div class="mt-8 bg-white rounded-2xl p-6 space-y-4" style="box-shadow: 0 1px 8px rgba(0,0,0,0.06)">
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">¿Qué obtienes al registrarte?</p>
+      <div class="benefit">
+        <div class="benefit-icon" style="background:rgba(192,57,43,0.1)">
+          <svg class="w-4 h-4" style="color:#C0392B" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <div><p class="text-sm font-medium text-gray-700">Publica sin límite</p><p class="text-xs text-gray-400">Cuantas propiedades necesites</p></div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon bg-green-50">
+          <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        </div>
+        <div><p class="text-sm font-medium text-gray-700">Estadísticas detalladas</p><p class="text-xs text-gray-400">Vistas y métricas de cada propiedad</p></div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon bg-yellow-50">
+          <svg class="w-4 h-4 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+        </div>
+        <div><p class="text-sm font-medium text-gray-700">Guarda favoritos</p><p class="text-xs text-gray-400">Guarda propiedades para revisar después</p></div>
+      </div>
+    </div>
+    <!-- Help -->
+    <div class="mt-6 text-center">
+      <p class="text-xs text-gray-400">¿Necesitas ayuda? Llámanos al <a href="tel:0412-6942043" class="font-medium" style="color:#C0392B">0412-6942043</a></p>
+    </div>
+    <!-- Footer -->
+    <div class="text-center mt-4 space-y-2">
+      <a href="../index.html" class="text-sm text-gray-400 hover:text-gray-600 inline-block">← Volver al inicio</a>
+      <p class="text-xs text-gray-300">Alianza 58 Bienes Raíces · 0412-6942043</p>
+    </div>
+  </div>
+  <script>
+    function showAlert(msg, type) {
+      const el = document.getElementById('alert');
+      el.className = `alert alert-${type}`; el.textContent = msg; el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+    function showFieldError(id) {
+      const input = document.getElementById(id);
+      if (input) input.classList.add('input-error');
+      const errEl = document.getElementById(id + 'Error');
+      if (errEl) errEl.style.display = 'block';
+    }
+    function clearFieldErrors() {
+      document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+      document.querySelectorAll('.field-error').forEach(el => el.style.display = 'none');
+    }
+    document.querySelectorAll('.input-field').forEach(el => {
+      el.addEventListener('input', () => { el.classList.remove('input-error'); });
+    });
+    function checkStrength(val) {
+      const s1 = document.getElementById('str1'), s2 = document.getElementById('str2'), s3 = document.getElementById('str3');
+      const txt = document.getElementById('strengthText');
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+      if (val.length >= 8 && /[^A-Za-z0-9]/.test(val)) score++;
+      const colors = ['#ef4444', '#f59e0b', '#22c55e'];
+      const labels = ['Débil', 'Media', 'Fuerte'];
+      [s1, s2, s3].forEach((b, i) => { b.style.background = i < score ? colors[Math.min(score - 1, 2)] : '#e5e7eb'; });
+      txt.textContent = val.length > 0 ? labels[Math.min(score - 1, 2)] || '' : '';
+      txt.style.color = val.length > 0 ? colors[Math.min(score - 1, 2)] : '#9ca3af';
+    }
+    function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+    async function handleRegister(e) {
+      e.preventDefault(); clearFieldErrors();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const terms = document.getElementById('terms').checked;
+      let valid = true;
+      if (!name) { showFieldError('name'); valid = false; }
+      if (!email || !isValidEmail(email)) { showFieldError('email'); valid = false; }
+      if (!phone || phone.length < 7) { showFieldError('phone'); valid = false; }
+      if (password.length < 6) { showFieldError('password'); valid = false; }
+      if (password !== confirmPassword) { showFieldError('confirmPassword'); valid = false; }
+      if (!terms) { document.getElementById('termsError').style.display = 'block'; valid = false; }
+      if (!valid) return;
+      const btn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('btnSpinner');
+      btn.disabled = true; btnText.textContent = 'Registrando...'; spinner.style.display = 'block';
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Error al registrarse');
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        showAlert('¡Cuenta creada exitosamente!', 'success');
+        setTimeout(() => { window.location.href = '/cuenta/'; }, 800);
+      } catch (err) { showAlert(err.message, 'error'); }
+      finally { btn.disabled = false; btnText.textContent = 'Registrarme'; spinner.style.display = 'none'; }
+    }
+    if (localStorage.getItem('token')) { window.location.href = '/cuenta/'; }
+  </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Panel | Alianza 58 Bienes Raíces</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f0f0f0; }
+    .btn-red { background-color: #C0392B; transition: background-color 0.2s; }
+    .btn-red:hover { background-color: #a93226; }
+    .stat-card { box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    .property-card { box-shadow: 0 1px 12px rgba(0,0,0,0.07); transition: transform 0.2s, box-shadow 0.2s; }
+    .property-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.12); }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 9999px; font-weight: 600; }
+    .badge-pending { background: #fef3c7; color: #92400e; }
+    .badge-approved { background: #d1fae5; color: #065f46; }
+    .badge-rejected { background: #fde8e8; color: #c0392b; }
+    .badge-sold { background: #dbeafe; color: #1e40af; }
+    .loading { display: flex; align-items: center; justify-content: center; padding: 40px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid #d1d5db; border-top-color: #C0392B; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .quick-link { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px; border-radius: 12px; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,0.06); transition: transform 0.15s; }
+    .quick-link:hover { transform: translateY(-2px); }
+    .quick-link-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  </style>
+  <link rel="icon" href="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+</head>
+<body class="min-h-screen">
+  <!-- Top Bar -->
+  <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
+    <a href="../index.html"><img src="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html" alt="Alianza 58" style="height:32px;width:auto;border-radius:4px;"></a>
+    <div class="hidden sm:flex items-center gap-6">
+      <a href="index.html" class="text-sm font-semibold text-gray-900 border-b-2 pb-0.5" style="border-color:#C0392B">Panel</a>
+      <a href="mis-propiedades.html" class="text-sm text-gray-500 hover:text-gray-700">Mis Propiedades</a>
+      <a href="publicar.html" class="text-sm text-gray-500 hover:text-gray-700">Publicar</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <span id="userName" class="text-sm text-gray-600 hidden sm:block"></span>
+      <button onclick="handleLogout()" class="text-sm text-gray-400 hover:text-red-600 transition" title="Cerrar sesión">Salir</button>
+    </div>
+  </nav>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <!-- Welcome -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Bienvenido, <span id="welcomeName">...</span></h1>
+      <p class="text-gray-500 text-sm mt-1"><span id="welcomeEmail"></span> · Miembro desde <span id="welcomeDate"></span></p>
+    </div>
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+      <a href="publicar.html" class="quick-link">
+        <div class="quick-link-icon" style="background:rgba(192,57,43,0.1)">
+          <svg class="w-5 h-5" style="color:#C0392B" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <span class="text-sm font-medium text-gray-700">Publicar</span>
+      </a>
+      <a href="mis-propiedades.html" class="quick-link">
+        <div class="quick-link-icon bg-blue-50">
+          <svg class="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        </div>
+        <span class="text-sm font-medium text-gray-700">Mis Propiedades</span>
+      </a>
+      <a href="../index.html" class="quick-link">
+        <div class="quick-link-icon bg-green-50">
+          <svg class="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <span class="text-sm font-medium text-gray-700">Buscar</span>
+      </a>
+      <a href="tel:0412-6942043" class="quick-link">
+        <div class="quick-link-icon bg-yellow-50">
+          <svg class="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+        </div>
+        <span class="text-sm font-medium text-gray-700">Contacto</span>
+      </a>
+    </div>
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+      <div class="stat-card bg-white rounded-xl p-5">
+        <p class="text-sm text-gray-500">Mis Propiedades</p>
+        <p id="statProperties" class="text-3xl font-bold text-gray-900 mt-1">0</p>
+      </div>
+      <div class="stat-card bg-white rounded-xl p-5">
+        <p class="text-sm text-gray-500">Publicaciones Activas</p>
+        <p id="statActive" class="text-3xl font-bold mt-1" style="color:#C0392B">0</p>
+      </div>
+      <div class="stat-card bg-white rounded-xl p-5">
+        <p class="text-sm text-gray-500">Total Vistas</p>
+        <p id="statViews" class="text-3xl font-bold text-gray-900 mt-1">0</p>
+      </div>
+    </div>
+    <!-- My Properties -->
+    <section class="mb-10">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-bold text-gray-900">Mis Propiedades</h2>
+        <div class="flex items-center gap-3">
+          <a href="mis-propiedades.html" class="text-sm text-gray-400 hover:text-gray-600 hidden sm:inline">Ver todas →</a>
+          <a href="publicar.html" class="btn-red text-white text-sm font-semibold px-4 py-2 rounded-lg">+ Publicar</a>
+        </div>
+      </div>
+      <div id="propertiesLoading" class="loading"><div class="spinner"></div></div>
+      <div id="propertiesEmpty" class="hidden bg-white rounded-xl p-10 text-center">
+        <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4"></path></svg>
+        <p class="text-gray-500 mb-4">Aún no has publicado propiedades</p>
+        <a href="publicar.html" class="btn-red text-white text-sm font-semibold px-6 py-2 rounded-lg inline-block">Publicar ahora</a>
+      </div>
+      <div id="propertiesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+    <!-- My Favorites -->
+    <section class="mb-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4">Mis Favoritos</h2>
+      <div id="favoritesLoading" class="loading"><div class="spinner"></div></div>
+      <div id="favoritesEmpty" class="hidden bg-white rounded-xl p-10 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+        <p class="text-gray-500">No tienes propiedades guardadas como favoritas.</p>
+      </div>
+      <div id="favoritesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+    <!-- Footer -->
+    <footer class="text-center py-6 border-t border-gray-200">
+      <p class="text-xs text-gray-400">Alianza 58 Bienes Raíces · 0412-6942043</p>
+    </footer>
+  </div>
+  <script>
+    function checkAuth() {
+      const token = localStorage.getItem('token');
+      if (!token) { window.location.href = '/cuenta/login'; return false; }
+      return token;
+    }
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem('user')); } catch { return null; }
+    }
+    function getHeaders() {
+      return { 'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json' };
+    }
+    function formatDate(d) {
+      if (!d) return '—';
+      return new Date(d).toLocaleDateString('es-VE', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    function statusBadge(status) {
+      const map = { pendiente: 'badge-pending', aprobada: 'badge-approved', rechazada: 'badge-rejected', vendida: 'badge-sold' };
+      return `<span class="badge ${map[status] || 'bg-gray-100 text-gray-600'}">${status ? status.charAt(0).toUpperCase() + status.slice(1) : '—'}</span>`;
+    }
+    function fmtPrice(p, c) {
+      const sym = { USD: '$', EUR: '€', Bs: 'Bs.' };
+      return `${sym[c] || '$'}${Number(p || 0).toLocaleString()}`;
+    }
+    function propertyCard(p) {
+      const img = p.images && p.images[0] ? p.images[0] : '/img/placeholder.jpg';
+      const details = [];
+      if (p.bedrooms) details.push(`${p.bedrooms} hab.`);
+      if (p.bathrooms) details.push(`${p.bathrooms} baños`);
+      if (p.area) details.push(`${p.area}m²`);
+      return `<div class="property-card bg-white rounded-xl overflow-hidden">
+        <div class="h-40 bg-gray-200 bg-cover bg-center" style="background-image:url('${img}.html')"></div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-1"><h3 class="font-semibold text-gray-900 text-sm line-clamp-1">${p.title || 'Sin título'}</h3>${statusBadge(p.status)}</div>
+          <p class="text-xs text-gray-400 mb-2">${p.property_type || ''} ${p.operation ? '· ' + p.operation : ''}</p>
+          <p class="font-bold text-lg" style="color:#C0392B">${fmtPrice(p.price, p.currency)}</p>
+          ${details.length ? `<p class="text-xs text-gray-400 mt-1">${details.join(' · ')}</p>` : ''}
+          <div class="flex items-center justify-between mt-3 text-xs text-gray-400">
+            <span>👁 ${p.views || 0} vistas</span><span>${formatDate(p.created_at)}</span>
+          </div>
+          <a href="https://alianza58.pages.dev/propiedad/${p.slug&#32;||&#32;p.id}" class="block text-center mt-3 text-sm font-medium py-2 rounded-lg border border-gray-200 text-gray-600 hover:border-gray-400 transition">Ver Detalle</a>
+        </div></div>`;
+    }
+    function favoriteCard(f) {
+      const p = f.property || f;
+      const img = p.images && p.images[0] ? p.images[0] : '/img/placeholder.jpg';
+      return `<div class="property-card bg-white rounded-xl overflow-hidden relative">
+        <button onclick="removeFavorite('${f.id || p.id}')" class="absolute top-2 right-2 bg-white/90 rounded-full p-1.5 shadow hover:bg-red-50 transition" title="Eliminar">
+          <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+        </button>
+        <div class="h-36 bg-gray-200 bg-cover bg-center" style="background-image:url('${img}.html')"></div>
+        <div class="p-3">
+          <h3 class="font-semibold text-gray-900 text-sm line-clamp-1">${p.title || 'Sin título'}</h3>
+          <p class="text-xs text-gray-400 mt-0.5">${p.city || ''}, ${p.state || ''}</p>
+          <p class="font-bold mt-1" style="color:#C0392B">${fmtPrice(p.price, p.currency)}</p>
+        </div></div>`;
+    }
+    async function removeFavorite(id) {
+      try {
+        await fetch(`/api/favorites/${id}`, { method: 'DELETE', headers: getHeaders() });
+        loadFavorites();
+      } catch (e) { console.error(e); }
+    }
+    async function loadDashboard() {
+      if (!checkAuth()) return;
+      const user = getUser();
+      if (!user) { window.location.href = '/cuenta/login'; return; }
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('welcomeName').textContent = user.name;
+      document.getElementById('welcomeEmail').textContent = user.email;
+      document.getElementById('welcomeDate').textContent = formatDate(user.created_at);
+      try {
+        const res = await fetch('/api/properties?user_id=me', { headers: getHeaders() });
+        const props = await res.json();
+        const list = Array.isArray(props) ? props : (props.data || []);
+        document.getElementById('propertiesLoading').style.display = 'none';
+        document.getElementById('statProperties').textContent = list.length;
+        document.getElementById('statActive').textContent = list.filter(p => p.status === 'aprobada').length;
+        document.getElementById('statViews').textContent = list.reduce((s, p) => s + (p.views || 0), 0);
+        if (list.length === 0) {
+          document.getElementById('propertiesEmpty').classList.remove('hidden');
+        } else {
+          document.getElementById('propertiesGrid').innerHTML = list.slice(0, 6).map(propertyCard).join('');
+        }
+      } catch (e) { document.getElementById('propertiesLoading').style.display = 'none'; }
+      await loadFavorites();
+    }
+    async function loadFavorites() {
+      document.getElementById('favoritesLoading').style.display = 'flex';
+      try {
+        const res = await fetch('/api/favorites', { headers: getHeaders() });
+        const favs = await res.json();
+        const list = Array.isArray(favs) ? favs : (favs.data || []);
+        document.getElementById('favoritesLoading').style.display = 'none';
+        if (list.length === 0) {
+          document.getElementById('favoritesEmpty').classList.remove('hidden');
+        } else {
+          document.getElementById('favoritesGrid').innerHTML = list.map(favoriteCard).join('');
+        }
+      } catch (e) { document.getElementById('favoritesLoading').style.display = 'none'; }
+    }
+    function handleLogout() {
+      localStorage.removeItem('token'); localStorage.removeItem('user');
+      window.location.href = '/cuenta/login';
+    }
+    loadDashboard();
+  </script>
+</body>
+</html>

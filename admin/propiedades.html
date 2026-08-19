@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propiedades | Alianza 58 Admin</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #e8e8e8; color: #000; display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px; background: #1a1a1a; color: #ccc; display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; transition: transform 0.3s;
+    }
+    .sidebar-logo {
+      padding: 20px 22px; border-bottom: 1px solid #333; font-size: 20px; font-weight: 800;
+      color: #fff; text-decoration: none; letter-spacing: -0.5px;
+    }
+    .sidebar-logo span { color: #C0392B; }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 12px; padding: 12px 22px; color: #aaa;
+      text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { background: #262626; color: #fff; }
+    .sidebar-nav a.active { background: #262626; color: #fff; border-left-color: #C0392B; }
+    .sidebar-nav a svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .sidebar-footer { padding: 16px 22px; border-top: 1px solid #333; }
+    .btn-logout {
+      width: 100%; padding: 10px; background: transparent; border: 1px solid #555; color: #ccc;
+      border-radius: 6px; cursor: pointer; font-size: 13px; transition: all 0.15s;
+    }
+    .btn-logout:hover { border-color: #C0392B; color: #C0392B; }
+
+    /* MOBILE */
+    .mobile-toggle {
+      display: none; position: fixed; top: 14px; left: 14px; z-index: 200;
+      width: 40px; height: 40px; background: #1a1a1a; border: none; border-radius: 8px;
+      color: #fff; font-size: 20px; cursor: pointer;
+    }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; }
+
+    /* MAIN */
+    .main { flex: 1; margin-left: 250px; min-height: 100vh; }
+    .topbar {
+      background: #fff; padding: 16px 28px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 50;
+    }
+    .topbar h1 { font-size: 20px; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+    .btn-new {
+      padding: 9px 20px; background: #C0392B; color: #fff; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.15s;
+    }
+    .btn-new:hover { background: #a93226; }
+
+    .content { padding: 28px; }
+
+    /* FILTERS */
+    .filters {
+      background: #fff; border-radius: 10px; padding: 16px 20px; margin-bottom: 20px;
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .filters select, .filters input {
+      padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;
+      background: #fafafa; color: #000; min-width: 130px;
+    }
+    .filters select:focus, .filters input:focus { outline: none; border-color: #C0392B; }
+    .filters .btn-filter {
+      padding: 8px 18px; background: #333; color: #fff; border: none; border-radius: 6px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .filters .btn-filter:hover { background: #C0392B; }
+
+    /* TABLE */
+    .table-wrap {
+      background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 600;
+      color: #888; text-transform: uppercase; letter-spacing: 0.3px; background: #fafafa;
+      border-bottom: 1px solid #eee; white-space: nowrap;
+    }
+    tbody td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+    tbody tr:hover { background: #fafafa; }
+    .thumb { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; background: #eee; display: block; }
+    .thumb-placeholder { width: 50px; height: 50px; border-radius: 6px; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 20px; color: #ccc; }
+
+    /* BADGES */
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-pending { background: #fef3cd; color: #856404; }
+    .badge-approved { background: #d4edda; color: #155724; }
+    .badge-rejected { background: #f8d7da; color: #721c24; }
+    .badge-sold { background: #d1ecf1; color: #0c5460; }
+    .badge-rented { background: #e2d5f1; color: #4a235a; }
+
+    /* ACTION BUTTONS */
+    .actions { display: flex; gap: 4px; flex-wrap: wrap; }
+    .btn-xs {
+      padding: 4px 10px; border: none; border-radius: 4px; font-size: 11px; cursor: pointer;
+      font-weight: 600; transition: opacity 0.15s; text-decoration: none; display: inline-flex; align-items: center; gap: 3px;
+    }
+    .btn-xs:hover { opacity: 0.8; }
+    .btn-approve { background: #d4edda; color: #155724; }
+    .btn-reject { background: #f8d7da; color: #721c24; }
+    .btn-edit { background: #e8e8e8; color: #333; }
+    .btn-delete { background: #f8d7da; color: #721c24; }
+    .btn-feature { background: #fff3cd; color: #856404; }
+    .btn-feature.featured { background: #C0392B; color: #fff; }
+
+    /* PAGINATION */
+    .pagination {
+      padding: 16px 20px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .pagination button, .pagination span {
+      padding: 7px 13px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; cursor: pointer;
+      background: #fff; color: #333; transition: all 0.15s;
+    }
+    .pagination button:hover { border-color: #C0392B; color: #C0392B; }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination .current { background: #C0392B; color: #fff; border-color: #C0392B; }
+
+    /* MODAL */
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500;
+      align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 12px; padding: 28px; max-width: 400px; width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .modal p { font-size: 14px; color: #666; margin-bottom: 20px; }
+    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+    .modal-btns button {
+      padding: 9px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-cancel-modal { background: #eee; color: #333; }
+    .btn-confirm-delete { background: #C0392B; color: #fff; }
+
+    .loading { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+    .empty { padding: 40px; text-align: center; color: #999; font-size: 14px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600; color: #fff; z-index: 999; transform: translateY(80px);
+      opacity: 0; transition: all 0.3s; pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #155724; }
+    .toast.error { background: #C0392B; }
+
+    @media (max-width: 768px) {
+      .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; }
+      .content { padding: 16px; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .filters select, .filters input { min-width: 100%; }
+    }
+  </style>
+  <link rel="icon" href="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+</head>
+<body>
+  <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="../index.html" class="sidebar-logo" style="display:flex;align-items:center;gap:8px;"><img src="../images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="A58" style="height:28px;width:auto;border-radius:4px;"> Admin</a>
+    <nav class="sidebar-nav">
+      <a href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+        Dashboard
+      </a>
+      <a href="propiedades.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        Propiedades
+      </a>
+      <a href="usuarios.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Usuarios
+      </a>
+      <a href="propiedades.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        Mensajes
+      </a>
+      <a href="propiedades.html#" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        Estadísticas
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <h1>Gestión de Propiedades</h1>
+      <div class="topbar-right">
+        <a href="editar-propiedad.html" class="btn-new">+ Nueva Propiedad</a>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Filters -->
+      <div class="filters">
+        <select id="filterStatus">
+          <option value="all">Todos los estados</option>
+          <option value="pending">Pendiente</option>
+          <option value="approved">Aprobada</option>
+          <option value="rejected">Rechazada</option>
+          <option value="sold">Vendida</option>
+          <option value="rented">Alquilada</option>
+        </select>
+        <select id="filterType">
+          <option value="">Todos los tipos</option>
+          <option value="casa">Casa</option>
+          <option value="apartamento">Apartamento</option>
+          <option value="terreno">Terreno</option>
+          <option value="local_comercial">Local Comercial</option>
+          <option value="oficina">Oficina</option>
+          <option value="finca">Finca</option>
+          <option value="otro">Otro</option>
+        </select>
+        <select id="filterOp">
+          <option value="">Todas las operaciones</option>
+          <option value="venta">Venta</option>
+          <option value="arriendo">Arriendo</option>
+        </select>
+        <input type="text" id="filterSearch" placeholder="Buscar...">
+        <button class="btn-filter" onclick="applyFilters()">Filtrar</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <div id="tableWrap"><div class="loading">Cargando propiedades...</div></div>
+        <div id="paginationWrap"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-bg" id="deleteModal">
+    <div class="modal">
+      <h3>Eliminar Propiedad</h3>
+      <p>¿Estás seguro de que deseas eliminar esta propiedad? Esta acción no se puede deshacer.</p>
+      <div class="modal-btns">
+        <button class="btn-cancel-modal" onclick="closeDeleteModal()">Cancelar</button>
+        <button class="btn-confirm-delete" id="btnConfirmDelete">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Auth
+    (function checkAuth() {
+      const token = localStorage.getItem('a58_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+      try {
+        const p = JSON.parse(atob(token.split('.')[1]));
+        if (p.exp < Math.floor(Date.now()/1000) || p.role !== 'admin') {
+          localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user');
+          window.location.href = 'login.html'; return;
+        }
+      } catch(e) { window.location.href = 'login.html'; return; }
+    })();
+
+    const API = (path, opts = {}) => {
+      const token = localStorage.getItem('a58_token');
+      return fetch(path, { ...opts, headers: { ...opts.headers, 'Authorization': 'Bearer ' + token } });
+    };
+
+    function logout() { localStorage.removeItem('a58_token'); localStorage.removeItem('a58_user'); window.location.href = 'login.html'; }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.querySelector('.sidebar-overlay').classList.toggle('open'); }
+
+    function statusBadge(s) {
+      const m = { pending:'badge-pending', approved:'badge-approved', rejected:'badge-rejected', sold:'badge-sold', rented:'badge-rented' };
+      const labels = { pending:'Pendiente', approved:'Aprobada', rejected:'Rechazada', sold:'Vendida', rented:'Alquilada' };
+      return `<span class="badge ${m[s]||''}">${labels[s]||s||'—'}</span>`;
+    }
+    function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('es-VE',{day:'2-digit',month:'short',year:'numeric'}); }
+    function fmtPrice(p,c) { if (!p) return '—'; return '$'+Number(p).toLocaleString('es-VE')+(c&&c!=='USD'?' '+c:' USD'); }
+
+    function toast(msg, type='success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.className = 'toast ' + type + ' show';
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    let currentPage = 1;
+    let deleteId = null;
+
+    function getFilters() {
+      const params = new URLSearchParams();
+      const status = document.getElementById('filterStatus').value;
+      const type = document.getElementById('filterType').value;
+      const op = document.getElementById('filterOp').value;
+      const search = document.getElementById('filterSearch').value.trim();
+      params.set('status', status);
+      params.set('limit', '20');
+      params.set('page', currentPage);
+      if (type) params.set('property_type', type);
+      if (op) params.set('operation_type', op);
+      if (search) params.set('search', search);
+      return params.toString();
+    }
+
+    function applyFilters() { currentPage = 1; loadProperties(); }
+
+    async function loadProperties() {
+      const wrap = document.getElementById('tableWrap');
+      wrap.innerHTML = '<div class="loading">Cargando...</div>';
+      try {
+        const res = await API('/api/properties?' + getFilters());
+        const data = await res.json();
+        const props = data.properties || [];
+        const pg = data.pagination || {};
+
+        if (!props.length) { wrap.innerHTML = '<div class="empty">No se encontraron propiedades</div>'; document.getElementById('paginationWrap').innerHTML = ''; return; }
+
+        let html = '<table><thead><tr><th>ID</th><th>Imagen</th><th>Título</th><th>Tipo</th><th>Operación</th><th>Estado</th><th>Precio</th><th>Vistas</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>';
+        props.forEach(p => {
+          const thumb = p.cover_image
+            ? `<img src="${p.cover_image}.html" class="thumb" alt="">`
+            : `<div class="thumb-placeholder">🏠</div>`;
+          const featClass = p.featured ? 'btn-feature featured' : 'btn-feature';
+          const featLabel = p.featured ? '★' : '☆';
+          html += `<tr>
+            <td>#${p.id}</td>
+            <td>${thumb}</td>
+            <td><strong>${(p.title||'—').substring(0,40)}</strong></td>
+            <td>${p.property_type||'—'}</td>
+            <td>${p.operation_type||'—'}</td>
+            <td>${statusBadge(p.status)}</td>
+            <td>${fmtPrice(p.price,p.currency)}</td>
+            <td>${p.views||0}</td>
+            <td>${fmtDate(p.created_at)}</td>
+            <td class="actions">
+              ${p.status==='pending'?`<button class="btn-xs btn-approve" onclick="updateStatus(${p.id},'approved')">✓ Aprobar</button>`:''}
+              ${p.status!=='rejected'?`<button class="btn-xs btn-reject" onclick="updateStatus(${p.id},'rejected')">✕ Rechazar</button>`:''}
+              <a href="https://alianza58.pages.dev/admin/editar-propiedad.html?id=${p.id}" class="btn-xs btn-edit">✎</a>
+              <button class="btn-xs btn-delete" onclick="openDeleteModal(${p.id})">🗑</button>
+              <button class="btn-xs ${featClass}" onclick="toggleFeature(${p.id},${p.featured?1:0})">${featLabel}</button>
+            </td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        wrap.innerHTML = html;
+
+        // Pagination
+        const pages = pg.pages || 1;
+        if (pages > 1) {
+          let phtml = '<div class="pagination">';
+          phtml += `<button ${currentPage<=1?'disabled':''} onclick="goPage(${currentPage-1})">← Anterior</button>`;
+          for (let i = 1; i <= pages; i++) {
+            if (i === currentPage) phtml += `<span class="current">${i}</span>`;
+            else phtml += `<button onclick="goPage(${i})">${i}</button>`;
+          }
+          phtml += `<button ${currentPage>=pages?'disabled':''} onclick="goPage(${currentPage+1})">Siguiente →</button>`;
+          phtml += '</div>';
+          document.getElementById('paginationWrap').innerHTML = phtml;
+        } else {
+          document.getElementById('paginationWrap').innerHTML = '';
+        }
+      } catch(e) {
+        wrap.innerHTML = '<div class="empty">Error al cargar propiedades</div>';
+      }
+    }
+
+    function goPage(p) { currentPage = p; loadProperties(); }
+
+    async function updateStatus(id, status) {
+      try {
+        const res = await API('/api/properties/' + id, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status })
+        });
+        if (res.ok) { toast('Estado actualizado a ' + status); loadProperties(); }
+        else toast('Error al actualizar estado', 'error');
+      } catch(e) { toast('Error de conexión', 'error'); }
+    }
+
+    async function toggleFeature(id, current) {
+      const newVal = current ? 0 : 1;
+      try {
+        const res = await API('/api/properties/' + id, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ featured: newVal })
+        });
+        if (res.ok) { toast(newVal ? 'Marcada como destacada' : 'Destacada removida'); loadProperties(); }
+        else toast('Error al actualizar', 'error');
+      } catch(e) { toast('Error de conexión', 'error'); }
+    }
+
+    function openDeleteModal(id) { deleteId = id; document.getElementById('deleteModal').classList.add('open'); }
+    function closeDeleteModal() { deleteId = null; document.getElementById('deleteModal').classList.remove('open'); }
+
+    document.getElementById('btnConfirmDelete').addEventListener('click', async function() {
+      if (!deleteId) return;
+      try {
+        const res = await API('/api/properties/' + deleteId, { method: 'DELETE' });
+        if (res.ok) { toast('Propiedad eliminada'); closeDeleteModal(); loadProperties(); }
+        else toast('Error al eliminar', 'error');
+      } catch(e) { toast('Error de conexión', 'error'); }
+    });
+
+    // Enter key on search
+    document.getElementById('filterSearch').addEventListener('keydown', function(e) { if (e.key === 'Enter') applyFilters(); });
+
+    // Auto-filter from URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlStatus = urlParams.get('status');
+    if (urlStatus && document.getElementById('filterStatus')) {
+      document.getElementById('filterStatus').value = urlStatus;
+    }
+    loadProperties();
+  </script>
+</body>
+</html>

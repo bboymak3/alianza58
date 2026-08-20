@@ -211,7 +211,29 @@
     if (!property) return;
 
     updateGallery(property);
+    updateSpecs(property);  // Actualizar specs (incluyendo mts2 terreno y construcción)
     updateSimilarProperties();  // no await — no bloquea
+  }
+
+  // ─── Actualizar specs (habitaciones, baños, mts2, etc.) ──────
+  function updateSpecs(p) {
+    var specsContainer = document.querySelector('.specs');
+    if (!specsContainer) return;
+
+    var html = '';
+    html += '<div class="spec"><div class="value">' + (p.bedrooms || 0) + '</div><div class="label">Habitaciones</div></div>';
+    html += '<div class="spec"><div class="value">' + (p.bathrooms || 0) + '</div><div class="label">Baños</div></div>';
+    html += '<div class="spec"><div class="value">' + (p.parking_spaces || 0) + '</div><div class="label">Estacionamientos</div></div>';
+    if (p.land_area > 0) {
+      html += '<div class="spec"><div class="value">' + p.land_area + '</div><div class="label">Mts2 Terreno</div></div>';
+    }
+    if (p.construction_area > 0) {
+      html += '<div class="spec"><div class="value">' + p.construction_area + '</div><div class="label">Mts2 Construcción</div></div>';
+    }
+    if (p.area > 0) {
+      html += '<div class="spec"><div class="value">' + p.area + ' m²</div><div class="label">Área Total</div></div>';
+    }
+    specsContainer.innerHTML = html;
   }
 
   // Exponer funciones para que el JS inline del HTML las pueda usar

@@ -342,8 +342,10 @@
       specs.innerHTML =
         '<div class="spec"><div class="value">' + (p.bedrooms || 0) + '</div><div class="label">Habitaciones</div></div>' +
         '<div class="spec"><div class="value">' + (p.bathrooms || 0) + '</div><div class="label">Baños</div></div>' +
-        '<div class="spec"><div class="value">' + (p.area > 0 ? p.area + ' m²' : '--') + '</div><div class="label">Área</div></div>' +
-        '<div class="spec"><div class="value">' + (p.parking_spaces || 0) + '</div><div class="label">Estacionamientos</div></div>';
+        '<div class="spec"><div class="value">' + (p.parking_spaces || 0) + '</div><div class="label">Estacionamientos</div></div>' +
+        (p.land_area > 0 ? '<div class="spec"><div class="value">' + p.land_area + '</div><div class="label">Mts2 Terreno</div></div>' : '') +
+        (p.construction_area > 0 ? '<div class="spec"><div class="value">' + p.construction_area + '</div><div class="label">Mts2 Construcción</div></div>' : '') +
+        (p.area > 0 ? '<div class="spec"><div class="value">' + p.area + ' m²</div><div class="label">Área Total</div></div>' : '');
 
       // Description
       document.getElementById('propDescription').textContent = p.description || 'Sin descripción disponible.';

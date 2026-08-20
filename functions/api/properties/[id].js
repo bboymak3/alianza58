@@ -145,6 +145,7 @@ export async function onRequestPut({ request, env, params }) {
     'area', 'bedrooms', 'bathrooms', 'parking_spaces', 'floors', 'year_built',
     'address', 'city', 'state', 'lat', 'lng', 'youtube_url', 'featured', 'status',
     'seo_title', 'seo_description', 'features', 'sort_order',
+    'land_area', 'construction_area',
   ];
 
   const updates = [];
@@ -154,10 +155,10 @@ export async function onRequestPut({ request, env, params }) {
     if (body[field] !== undefined) {
       updates.push(`${field} = ?`);
       // Coerción de tipos
-      if (['price', 'area', 'lat', 'lng'].includes(field)) {
-        values.push(body[field] === null ? null : parseFloat(body[field]) || 0);
+      if (['price', 'area', 'lat', 'lng', 'land_area', 'construction_area'].includes(field)) {
+        values.push(body[field] === null || body[field] === '' ? null : parseFloat(body[field]) || 0);
       } else if (['bedrooms', 'bathrooms', 'parking_spaces', 'floors', 'year_built'].includes(field)) {
-        values.push(body[field] === null ? null : parseInt(body[field]) || 0);
+        values.push(body[field] === null || body[field] === '' ? null : parseInt(body[field]) || 0);
       } else if (['featured'].includes(field)) {
         values.push(body[field] ? 1 : 0);
       } else {

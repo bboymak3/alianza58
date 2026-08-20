@@ -322,6 +322,8 @@ function createPropertyCard(prop) {
   const price = formatPrice(prop.price, prop.currency);
   const priceLabel = (prop.operation_type || prop.operation) === 'arrendamiento' ? price + ' /mes' : price;
   const area = prop.area ? prop.area + ' m²' : '';
+  const landArea = prop.land_area ? prop.land_area + ' mts2' : '';
+  const constructionArea = prop.construction_area ? prop.construction_area + ' mts2' : '';
   const beds = prop.bedrooms || prop.beds || 0;
   const baths = prop.bathrooms || prop.baths || 0;
   const operation = prop.operation_type || prop.operation || 'venta';
@@ -334,6 +336,12 @@ function createPropertyCard(prop) {
   let specsHtml = '';
   if (area) {
     specsHtml += '<span class="prop-card-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>' + escapeHtml(area) + '</span>';
+  }
+  if (landArea) {
+    specsHtml += '<span class="prop-card-spec" title="Metros de Terreno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 21l9-18 9 18H3z"/></svg>' + escapeHtml(landArea) + ' Terreno</span>';
+  }
+  if (constructionArea) {
+    specsHtml += '<span class="prop-card-spec" title="Metros de Construcción"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M2 22h20M4 22V8l8-6 8 6v14M9 22v-6h6v6"/></svg>' + escapeHtml(constructionArea) + ' Const.</span>';
   }
   if (beds > 0) {
     specsHtml += '<span class="prop-card-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M2 4v16M22 4v16M2 8h20M2 16h20"/></svg>' + beds + ' Hab.</span>';

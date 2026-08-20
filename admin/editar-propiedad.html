@@ -330,8 +330,12 @@
           <div class="form-section-body">
             <div class="form-grid">
               <div class="form-group">
-                <label for="area">Área construida (m²)</label>
-                <input type="number" id="area" name="area" step="0.01" min="0" placeholder="0">
+                <label for="land_area">Metros de Terreno (mts2)</label>
+                <input type="number" id="land_area" name="land_area" step="0.01" min="0" placeholder="0">
+              </div>
+              <div class="form-group">
+                <label for="construction_area">Metros de Construcción (mts2)</label>
+                <input type="number" id="construction_area" name="construction_area" step="0.01" min="0" placeholder="0">
               </div>
               <div class="form-group">
                 <label for="bedrooms">Habitaciones</label>
@@ -570,8 +574,9 @@
 
         // Populate form
         const fields = ['title','slug','description','property_type','operation_type','price','currency',
-          'address','city','state','lat','lng','area','bedrooms','bathrooms',
-          'parking_spaces','year_built','youtube_url','status','seo_title','seo_description','expires_at'];
+          'address','city','state','lat','lng','area','land_area','construction_area',
+          'bedrooms','bathrooms','parking_spaces','year_built','youtube_url','status',
+          'seo_title','seo_description','expires_at'];
         fields.forEach(f => {
           const el = document.getElementById(f);
           if (el && p[f] !== null && p[f] !== undefined) el.value = p[f];
@@ -706,7 +711,9 @@
         state: document.getElementById('state').value,
         lat: document.getElementById('lat').value || null,
         lng: document.getElementById('lng').value || null,
-        area: parseFloat(document.getElementById('area').value) || null,
+        area: parseFloat(document.getElementById('area')?.value) || null,
+        land_area: parseFloat(document.getElementById('land_area')?.value) || null,
+        construction_area: parseFloat(document.getElementById('construction_area')?.value) || null,
         bedrooms: parseInt(document.getElementById('bedrooms').value) || 0,
         bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
         parking_spaces: parseInt(document.getElementById('parking_spaces').value) || 0,

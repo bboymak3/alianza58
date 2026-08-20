@@ -157,6 +157,7 @@ export async function onRequestGet({ request, env }) {
            p.state_slug, p.lat, p.lng, p.youtube_url, p.featured, p.status,
            p.views, p.created_at, p.updated_at, p.expires_at,
            p.seo_title, p.seo_description, p.features, p.sort_order,
+           p.land_area, p.construction_area,
            u.name as owner_name, u.email as owner_email, u.phone as owner_phone,
            u.whatsapp as owner_whatsapp
     FROM properties p
@@ -237,6 +238,7 @@ export async function onRequestPost({ request, env }) {
     area, bedrooms, bathrooms, parking_spaces, floors, year_built,
     address, city, state, lat, lng, youtube_url, featured, status,
     seo_title, seo_description, features, sort_order,
+    land_area, construction_area,
     images,  // ← array de URLs de imágenes subidas previamente
   } = body;
 
@@ -264,8 +266,9 @@ export async function onRequestPost({ request, env }) {
       user_id, title, slug, description, property_type, operation_type,
       price, currency, area, bedrooms, bathrooms, parking_spaces, floors, year_built,
       address, city, state, state_slug, lat, lng, youtube_url, featured, status, views,
-      created_at, updated_at, seo_title, seo_description, features, sort_order
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'), ?, ?, ?, ?)`
+      created_at, updated_at, seo_title, seo_description, features, sort_order,
+      land_area, construction_area
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'), ?, ?, ?, ?, ?, ?)`
   ).bind(
     user.id,
     title.trim(),
@@ -293,7 +296,9 @@ export async function onRequestPost({ request, env }) {
     seo_title || null,
     seo_description || null,
     features || null,
-    parseInt(sort_order) || 0
+    parseInt(sort_order) || 0,
+    parseFloat(land_area) || null,
+    parseFloat(construction_area) || null
   ).run();
 
   const propertyId = result.meta.last_row_id;

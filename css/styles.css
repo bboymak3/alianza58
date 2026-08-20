@@ -2916,7 +2916,8 @@ input[type="range"]::-moz-range-thumb {
 
   .properties-grid,
   .services-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
   }
 
   .stats-grid {
@@ -3082,8 +3083,8 @@ input[type="range"]::-moz-range-thumb {
 
   /* En mobile pequeño, mostrar 2 propiedades lado a lado con aspect-ratio 4:3 */
   .properties-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
   }
 
   /* Compactar las cards en mobile */

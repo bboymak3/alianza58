@@ -509,13 +509,25 @@
     })();
 
     // ── Dismiss loading screen after animation completes ──────────────
-    window.addEventListener('load', function() {
-      setTimeout(function() {
-        var ls = document.getElementById('loadingScreen');
-        if (ls) ls.classList.add('hidden');
-        setTimeout(function() { if (ls) ls.remove(); }, 900);
-      }, 500);
-    });
+    // Usar DOMContentLoaded (no 'load') porque 'load' espera a TODOS los recursos
+    // y si algo falla, el loading screen nunca se oculta.
+    function dismissLoadingScreen() {
+      var ls = document.getElementById('loadingScreen');
+      if (ls) {
+        ls.classList.add('hidden');
+        setTimeout(function() { if (ls && ls.parentNode) ls.parentNode.removeChild(ls); }, 900);
+      }
+    }
+    // Intentar多种触发方式
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(dismissLoadingScreen, 500);
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(dismissLoadingScreen, 500);
+      });
+      // Backup: si DOMContentLoaded ya pasó, forzar a los 2s
+      setTimeout(dismissLoadingScreen, 2000);
+    }
 
     // Load dynamic banner from admin API
     (async function loadBanner() {

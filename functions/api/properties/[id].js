@@ -199,19 +199,22 @@ export async function onRequestPut({ request, env, params }) {
 
   // Manejo de imágenes: si body.images viene como array, reemplazar
   if (Array.isArray(body.images)) {
-    // Borrar imágenes existentes (r2_key null = default, no tocar las reales)
-    // En realidad, borrar todas y reinsertar
+    // Borrar imágenes existentes
     await env.DB.prepare('DELETE FROM property_images WHERE property_id = ?').bind(id).run();
 
     if (body.images.length > 0) {
       for (let i = 0; i < body.images.length; i++) {
-        const url = body.images[i];
+        const item = body.images[i];
+        // Aceptar tanto string (URL) como objeto {url, is_cover}
+        const url = typeof item === 'string' ? item : item.url;
+        const isCover = typeof item === 'object' && item.is_cover === 1 ? 1 : (i === 0 ? 1 : 0);
+        if (!url) continue;
         let r2Key = null;
         const match = url.match(/[?&]key=([^&]+)/);
         if (match) r2Key = decodeURIComponent(match[1]);
         await env.DB.prepare(
           'INSERT INTO property_images (property_id, url, r2_key, is_cover, sort_order, created_at) VALUES (?, ?, ?, ?, ?, datetime(\'now\'))'
-        ).bind(id, url, r2Key, i === 0 ? 1 : 0, i).run();
+        ).bind(id, url, r2Key, isCover, i).run();
       }
     } else {
       // Sin imágenes → default

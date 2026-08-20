@@ -751,19 +751,29 @@
       data.features = JSON.stringify(features);
 
       // Incluir imágenes nuevas subidas en el body para que la API las asocie
-      // newUploads contiene las URLs devueltas por /api/upload (formato: /api/serve?key=...)
-      if (newUploads.length > 0) {
-        data.images = newUploads;
-      }
+      // El manejo de portada se hace dentro del try/catch abajo
 
       try {
         let res;
         if (propertyId) {
-          // Para PUT: enviar todas las imágenes (existentes + nuevas) para reemplazar
-          const allImages = [
-            ...existingImages.map(img => img.image_url || img.url),
-            ...newUploads
-          ].filter(url => url && url.indexOf('default-property') === -1);
+          // Para PUT: enviar todas las imágenes (existentes + nuevas) con info de portada
+          // Cada imagen es un objeto {url, is_cover} para que el backend sepa cuál es la portada
+          const allImages = [];
+          // Imágenes existentes
+          existingImages.forEach(img => {
+            const url = img.image_url || img.url;
+            if (url && url.indexOf('default-property') === -1) {
+              allImages.push({ url: url, is_cover: img.id === coverImageId ? 1 : 0 });
+            }
+          });
+          // Imágenes nuevas subidas
+          newUploads.forEach((url, i) => {
+            if (url && url.indexOf('default-property') === -1) {
+              // Si coverImageId es null y no hay existentes, la primera nueva es cover
+              const isNewCover = coverImageId === null && i === 0 && existingImages.length === 0;
+              allImages.push({ url: url, is_cover: isNewCover ? 1 : 0 });
+            }
+          });
           if (allImages.length > 0) {
             data.images = allImages;
           }
@@ -771,6 +781,10 @@
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
           });
         } else {
+          // Para POST (crear nueva): enviar como array de objetos también
+          if (newUploads.length > 0) {
+            data.images = newUploads.map((url, i) => ({ url: url, is_cover: i === 0 ? 1 : 0 }));
+          }
           res = await API('/api/properties', {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
           });

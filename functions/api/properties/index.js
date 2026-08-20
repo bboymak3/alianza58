@@ -246,6 +246,15 @@ export async function onRequestPost({ request, env }) {
     return jsonError('El título es requerido', 400);
   }
 
+  // Verificar duplicados por título (case-insensitive)
+  const titleLower = title.trim().toLowerCase();
+  const existingByTitle = await env.DB.prepare(
+    'SELECT id, title FROM properties WHERE LOWER(title) = ?'
+  ).bind(titleLower).first();
+  if (existingByTitle) {
+    return jsonError('Ya existe una propiedad con este título: "' + existingByTitle.title + '"', 409);
+  }
+
   // Generar slug único
   const baseSlug = slugify(title);
   let slug = baseSlug;
@@ -307,7 +316,11 @@ export async function onRequestPost({ request, env }) {
   let attachedImages = [];
   if (Array.isArray(images) && images.length > 0) {
     for (let i = 0; i < images.length; i++) {
-      const url = images[i];
+      const item = images[i];
+      // Aceptar tanto string (URL) como objeto {url, is_cover}
+      const url = typeof item === 'string' ? item : item.url;
+      const isCover = typeof item === 'object' && item.is_cover === 1 ? 1 : (i === 0 ? 1 : 0);
+      if (!url) continue;
       // La URL viene como /api/serve?key=... — extraer la r2_key
       let r2Key = null;
       const match = url.match(/[?&]key=([^&]+)/);
@@ -320,10 +333,10 @@ export async function onRequestPost({ request, env }) {
         propertyId,
         url,
         r2Key,
-        i === 0 ? 1 : 0,
+        isCover,
         i
       ).run();
-      attachedImages.push({ url, r2_key: r2Key, is_cover: i === 0, sort_order: i });
+      attachedImages.push({ url, r2_key: r2Key, is_cover: isCover, sort_order: i });
     }
   } else {
     // Si no hay imágenes, insertar la default como cover

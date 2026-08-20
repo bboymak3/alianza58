@@ -73,7 +73,8 @@ export async function onRequestGet({ request, env }) {
   const precioMax = parseFloat(params.get('precio_max') || '0') || 0;
   const habitaciones = parseInt(params.get('habitaciones') || '0') || 0;
   const q = (params.get('q') || params.get('search') || '').trim();
-  const destacado = params.get('destacado');
+  // Aceptar tanto 'destacado' (ES) como 'featured' (EN) para filtrar destacadas
+  const destacado = params.get('destacado') || params.get('featured');
   const orden = params.get('orden') || 'recientes';
   const estadoSlug = params.get('estado_slug');
 
@@ -137,13 +138,13 @@ export async function onRequestGet({ request, env }) {
     where.push('p.featured = 1');
   }
 
-  // Orden
+  // Orden — aceptar valores en español (frontend) e inglés
   const ordenParam = orden || params.get('sort') || 'recientes';
   let orderClause = 'p.created_at DESC';
-  if (ordenParam === 'precio_asc') orderClause = 'p.price ASC';
-  else if (ordenParam === 'precio_desc') orderClause = 'p.price DESC';
-  else if (ordenParam === 'vistas') orderClause = 'p.views DESC';
-  else if (ordenParam === 'newest') orderClause = 'p.created_at DESC';
+  if (ordenParam === 'precio_asc' || ordenParam === 'precio_menor') orderClause = 'p.price ASC';
+  else if (ordenParam === 'precio_desc' || ordenParam === 'precio_mayor') orderClause = 'p.price DESC';
+  else if (ordenParam === 'vistas' || ordenParam === 'mas_vistos') orderClause = 'p.views DESC';
+  else if (ordenParam === 'newest' || ordenParam === 'recientes') orderClause = 'p.created_at DESC';
   else if (ordenParam === 'oldest') orderClause = 'p.created_at ASC';
 
   const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';

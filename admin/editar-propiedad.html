@@ -646,7 +646,7 @@
       existingImages.forEach((img, i) => {
         const isCover = img.id === coverImageId;
         html += `<div class="gallery-item ${isCover?'cover':''}" onclick="setCover('existing',${img.id})" title="Clic para portada">
-          <img src="${img.image_url}.html" alt="">
+          <img src="${img.image_url || img.url}" alt="">
           ${isCover ? '<div class="cover-badge">PORTADA</div>' : ''}
           <button class="remove-img" onclick="event.stopPropagation();removeExistingImage(${img.id})">✕</button>
         </div>`;
@@ -656,7 +656,7 @@
       newUploads.forEach((url, i) => {
         const isCover = coverImageId === null && i === 0 && existingImages.length === 0;
         html += `<div class="gallery-item ${isCover?'cover':''}" onclick="setCover('new',${i})" title="Clic para portada">
-          <img src="${url}.html" alt="">
+          <img src="${url}" alt="">
           ${isCover ? '<div class="cover-badge">PORTADA</div>' : ''}
           <button class="remove-img" onclick="event.stopPropagation();removeNewImage(${i})">✕</button>
         </div>`;
@@ -722,9 +722,23 @@
       document.querySelectorAll('input[name="features"]:checked').forEach(cb => features.push(cb.value));
       data.features = JSON.stringify(features);
 
+      // Incluir imágenes nuevas subidas en el body para que la API las asocie
+      // newUploads contiene las URLs devueltas por /api/upload (formato: /api/serve?key=...)
+      if (newUploads.length > 0) {
+        data.images = newUploads;
+      }
+
       try {
         let res;
         if (propertyId) {
+          // Para PUT: enviar todas las imágenes (existentes + nuevas) para reemplazar
+          const allImages = [
+            ...existingImages.map(img => img.image_url || img.url),
+            ...newUploads
+          ].filter(url => url && url.indexOf('default-property') === -1);
+          if (allImages.length > 0) {
+            data.images = allImages;
+          }
           res = await API('/api/properties/' + propertyId, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data)
           });

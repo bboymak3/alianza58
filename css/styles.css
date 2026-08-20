@@ -3391,9 +3391,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ── Scanline Glitch Overlay ──────────────────────────────── */
-/* DESACTIVADO: causaba parpadeo negro al cargar la página (efecto "TV vieja")
-   que se veía como pantalla negra en algunos dispositivos.
-   Para reactivar, cambiar 'opacity: 0' abajo y descomentar la línea 'animation'.
+/* Efecto de TV vieja al cargar. Se reproduce durante 2.5s (ver index.html). */
 .scanline-overlay {
   position: absolute;
   inset: 0;
@@ -3407,23 +3405,19 @@ input[type="range"]::-moz-range-thumb {
     rgba(0,0,0,0.06) 4px
   );
   opacity: 0;
-  animation: scanlineFlicker 2.8s ease-out 0.2s forwards;
+  animation: scanlineFlicker 2.5s ease-out 0.2s forwards;
 }
 @keyframes scanlineFlicker {
   0%   { opacity: 0; }
-  5%   { opacity: 0.9; }
+  5%   { opacity: 0.6; }
   12%  { opacity: 0.1; }
-  18%  { opacity: 0.85; }
-  30%  { opacity: 0.3; }
-  40%  { opacity: 0.6; }
+  18%  { opacity: 0.55; }
+  30%  { opacity: 0.25; }
+  40%  { opacity: 0.45; }
   55%  { opacity: 0.15; }
-  70%  { opacity: 0.4; }
+  70%  { opacity: 0.3; }
   85%  { opacity: 0.1; }
   100% { opacity: 0; }
-}
-*/
-.scanline-overlay {
-  display: none !important;
 }
 
 /* ── Particle Canvas ──────────────────────────────── */

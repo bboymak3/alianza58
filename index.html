@@ -82,7 +82,7 @@
     <canvas id="particleCanvas"></canvas>
   </div>
 
-  <!-- Auto-hide loading screen: script inline justo después para ejecutar lo antes posible -->
+  <!-- Loading screen auto-hide: se oculta a los 2.5s (animación visible) o antes si falla -->
   <script>
     (function() {
       function hideLS() {
@@ -94,17 +94,11 @@
           }, 900);
         }
       }
-      // Múltiples intentos para garantizar que se oculte
-      // 1. Cuando DOMContentLoaded dispare
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() { setTimeout(hideLS, 800); });
-      } else {
-        setTimeout(hideLS, 800);
-      }
-      // 2. Backup: cuando 'load' dispare (todos los recursos cargaron)
-      window.addEventListener('load', function() { setTimeout(hideLS, 100); });
-      // 3. Último recurso: a los 3s sin importar qué
-      setTimeout(hideLS, 3000);
+      // Dejar que la animación se reproduzca 2.5s, luego ocultar
+      // Si el load dispara antes, esperar igual a 2.5s para no cortar la animación
+      setTimeout(hideLS, 2500);
+      // Backup: si algo falla, a los 5s forzar
+      setTimeout(hideLS, 5000);
     })();
   </script>
 

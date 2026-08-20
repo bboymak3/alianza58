@@ -80,14 +80,25 @@ export async function onRequestGet({ request, env }) {
   // Si es admin y pide status=pending, mostrar pendientes. Sino solo approved.
   const user = await getRequestUser(request, env);
   const isAdminReq = isAdmin(user);
-  const statusFilter = isAdminReq && params.get('status') ? params.get('status') : 'approved';
+  const statusParam = params.get('status');
 
   // Construir WHERE dinámico
   const where = [];
   const binds = [];
 
-  where.push('p.status = ?');
-  binds.push(statusFilter);
+  // Filtro por status:
+  // - admin puede pasar 'all' para ver TODAS (incluida pendientes, rechazadas, etc.)
+  // - admin puede pasar un status específico ('pending', 'approved', 'rejected')
+  // - si no es admin, siempre solo 'approved'
+  if (statusParam === 'all' && isAdminReq) {
+    // No filtrar por status — devolver todas
+  } else if (statusParam && isAdminReq) {
+    where.push('p.status = ?');
+    binds.push(statusParam);
+  } else {
+    where.push('p.status = ?');
+    binds.push('approved');
+  }
 
   if (estado) {
     where.push('p.state = ?');
@@ -127,10 +138,13 @@ export async function onRequestGet({ request, env }) {
   }
 
   // Orden
+  const ordenParam = orden || params.get('sort') || 'recientes';
   let orderClause = 'p.created_at DESC';
-  if (orden === 'precio_asc') orderClause = 'p.price ASC';
-  else if (orden === 'precio_desc') orderClause = 'p.price DESC';
-  else if (orden === 'vistas') orderClause = 'p.views DESC';
+  if (ordenParam === 'precio_asc') orderClause = 'p.price ASC';
+  else if (ordenParam === 'precio_desc') orderClause = 'p.price DESC';
+  else if (ordenParam === 'vistas') orderClause = 'p.views DESC';
+  else if (ordenParam === 'newest') orderClause = 'p.created_at DESC';
+  else if (ordenParam === 'oldest') orderClause = 'p.created_at ASC';
 
   const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
 

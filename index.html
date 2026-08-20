@@ -82,6 +82,32 @@
     <canvas id="particleCanvas"></canvas>
   </div>
 
+  <!-- Auto-hide loading screen: script inline justo después para ejecutar lo antes posible -->
+  <script>
+    (function() {
+      function hideLS() {
+        var ls = document.getElementById('loadingScreen');
+        if (ls) {
+          ls.classList.add('hidden');
+          setTimeout(function() {
+            if (ls && ls.parentNode) ls.parentNode.removeChild(ls);
+          }, 900);
+        }
+      }
+      // Múltiples intentos para garantizar que se oculte
+      // 1. Cuando DOMContentLoaded dispare
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { setTimeout(hideLS, 800); });
+      } else {
+        setTimeout(hideLS, 800);
+      }
+      // 2. Backup: cuando 'load' dispare (todos los recursos cargaron)
+      window.addEventListener('load', function() { setTimeout(hideLS, 100); });
+      // 3. Último recurso: a los 3s sin importar qué
+      setTimeout(hideLS, 3000);
+    })();
+  </script>
+
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
@@ -508,26 +534,7 @@
       }
     })();
 
-    // ── Dismiss loading screen after animation completes ──────────────
-    // Usar DOMContentLoaded (no 'load') porque 'load' espera a TODOS los recursos
-    // y si algo falla, el loading screen nunca se oculta.
-    function dismissLoadingScreen() {
-      var ls = document.getElementById('loadingScreen');
-      if (ls) {
-        ls.classList.add('hidden');
-        setTimeout(function() { if (ls && ls.parentNode) ls.parentNode.removeChild(ls); }, 900);
-      }
-    }
-    // Intentar多种触发方式
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
-      setTimeout(dismissLoadingScreen, 500);
-    } else {
-      document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(dismissLoadingScreen, 500);
-      });
-      // Backup: si DOMContentLoaded ya pasó, forzar a los 2s
-      setTimeout(dismissLoadingScreen, 2000);
-    }
+    // ── Dismiss loading screen: ahora manejado por script inline al inicio del body ──
 
     // Load dynamic banner from admin API
     (async function loadBanner() {

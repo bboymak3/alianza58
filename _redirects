@@ -1,0 +1,10 @@
+# alianza58 - Cloudflare Pages Redirects
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# Rewrite (status 200) para propiedades sin HTML estático:
+# Si /propiedad/{slug} no tiene un archivo .html correspondiente,
+# servir la plantilla genérica que carga los datos via JS desde la API.
+# Cloudflare Pages prioriza archivos estáticos sobre redirects,
+# así que las páginas estáticas existentes (casa-moderna-urb-barinas, etc.)
+# siguen funcionando normalmente.
+/propiedad/:slug /propiedad/_plantilla.html 200

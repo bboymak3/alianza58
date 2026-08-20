@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cargando... - Alianza 58</title>
+  <meta name="description" content="Propiedad en venta o alquiler en Barinas, Venezuela.">
+  <link rel="canonical" href="">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Propiedad - Alianza 58">
+  <meta property="og:description" content="Propiedad en Barinas, Venezuela.">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg">
+  <meta property="og:site_name" content="Alianza 58">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Propiedad - Alianza 58">
+  <meta name="twitter:description" content="Propiedad en Barinas, Venezuela.">
+  <meta name="twitter:image" content="/images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; color: #1a1a2e; background: #f8f9fa; line-height: 1.6; }
+    a { color: #2563eb; text-decoration: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+    /* Nav */
+    nav { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 0; position: sticky; top: 0; z-index: 50; }
+    nav .container { display: flex; justify-content: space-between; align-items: center; }
+    nav .logo { font-size: 1.3rem; font-weight: 700; color: #1a1a2e; }
+    nav a { color: #555; margin-left: 20px; font-size: .9rem; }
+    nav a:hover { color: #2563eb; }
+
+    /* Gallery */
+    .gallery { margin: 20px 0; border-radius: 12px; overflow: hidden; background: #000; }
+    .gallery-main-wrap { position: relative; }
+    .gallery-main { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; cursor: zoom-in; transition: opacity .25s; }
+    .gallery-main.loading { opacity: .5; }
+    .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45); color: #fff; border: none; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .25s, background .2s; z-index: 5; }
+    .gallery-main-wrap:hover .gallery-nav { opacity: 1; }
+    .gallery-nav:hover { background: rgba(0,0,0,.7); }
+    .gallery-nav.prev { left: 12px; }
+    .gallery-nav.next { right: 12px; }
+    .gallery-thumbs { display: flex; gap: 8px; padding: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+    .gallery-thumbs::-webkit-scrollbar { height: 4px; }
+    .gallery-thumbs::-webkit-scrollbar-thumb { background: rgba(255,255,255,.3); border-radius: 4px; }
+    .gallery-thumbs img { width: 80px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; opacity: .5; transition: opacity .2s, transform .2s; flex-shrink: 0; border: 2px solid transparent; }
+    .gallery-thumbs img:hover, .gallery-thumbs img.active { opacity: 1; transform: scale(1.05); border-color: #C0392B; }
+    .gallery-counter { color: #fff; font-size: .85rem; background: rgba(0,0,0,.55); padding: 4px 14px; border-radius: 20px; pointer-events: none; }
+    @media (max-width: 640px) {
+      .gallery-thumbs img { width: 64px; height: 48px; }
+      .gallery-nav { width: 36px; height: 36px; font-size: 1rem; opacity: 1; }
+    }
+
+    /* Breadcrumb */
+    .breadcrumb { font-size: .85rem; color: #888; margin: 16px 0; }
+    .breadcrumb a { color: #666; }
+    .breadcrumb span { margin: 0 6px; }
+
+    /* Layout */
+    .content { display: grid; grid-template-columns: 1fr 360px; gap: 24px; margin: 20px 0; }
+    @media (max-width: 768px) { .content { grid-template-columns: 1fr; } }
+
+    /* Cards */
+    .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 20px; }
+    .card h2 { font-size: 1.1rem; margin-bottom: 12px; color: #1a1a2e; }
+
+    /* Price */
+    .price-section { margin-bottom: 16px; }
+    .price { font-size: 2rem; font-weight: 700; color: #059669; }
+    .op-badge { display: inline-block; background: #2563eb; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 500; margin-bottom: 8px; }
+    .type-badge { display: inline-block; background: #f3f4f6; color: #374151; padding: 4px 12px; border-radius: 20px; font-size: .8rem; margin-left: 8px; }
+
+    /* Specs grid */
+    .specs { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 16px; }
+    .spec { text-align: center; padding: 12px; background: #f8f9fa; border-radius: 8px; }
+    .spec .value { font-size: 1.3rem; font-weight: 600; color: #1a1a2e; }
+    .spec .label { font-size: .75rem; color: #888; margin-top: 2px; }
+
+    /* Features */
+    .features-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .feature-tag { background: #eff6ff; color: #2563eb; padding: 4px 12px; border-radius: 20px; font-size: .8rem; }
+
+    /* Description */
+    .description { white-space: pre-wrap; color: #444; line-height: 1.8; }
+
+    /* Map */
+    #map { height: 300px; border-radius: 8px; z-index: 1; }
+
+    /* Contact */
+    .contact-btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; text-align: center; margin-bottom: 10px; transition: transform .15s; }
+    .contact-btn:hover { transform: scale(1.02); }
+    .whatsapp { background: #25d366; color: #fff; }
+    .phone-btn { background: #2563eb; color: #fff; }
+    .owner-info { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb; }
+    .owner-info h4 { margin-bottom: 8px; }
+    .owner-info p { font-size: .9rem; color: #666; }
+
+    /* Similar */
+    .similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .similar-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); transition: transform .2s; }
+    .similar-card:hover { transform: translateY(-2px); }
+    .similar-card img { width: 100%; height: 180px; object-fit: cover; }
+    .similar-card .info { padding: 12px; }
+    .similar-card .sprice { font-size: 1.1rem; font-weight: 700; color: #059669; }
+    .similar-card .stitle { font-size: .95rem; font-weight: 500; margin: 4px 0 2px; }
+    .similar-card .slocation { font-size: .8rem; color: #888; }
+
+    /* Video */
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-bottom: 20px; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+    footer { background: #1a1a2e; color: #aaa; padding: 32px 0; margin-top: 40px; text-align: center; font-size: .85rem; }
+    footer a { color: #ccc; }
+
+    /* Loading */
+    .loading-state { text-align: center; padding: 60px 20px; color: #888; }
+    .loading-state .spinner { width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Not found */
+    .not-found { text-align: center; padding: 80px 20px; }
+    .not-found h1 { font-size: 3rem; color: #C0392B; margin-bottom: 16px; }
+    .not-found a { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #C0392B; color: #fff; border-radius: 8px; font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="../index.html" class="logo"><img src="../images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg" alt="Alianza 58" style="height:36px;width:auto;border-radius:4px;"></a>
+      <div>
+        <a href="../propiedades.html">Propiedades</a>
+        <a href="../contacto.html">Contacto</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Breadcrumb (will be filled by JS) -->
+    <div class="breadcrumb" id="breadcrumb">
+      <a href="../index.html">Inicio</a><span>›</span>
+      <a href="../propiedades.html">Propiedades</a><span>›</span>
+      <span id="crumbState">...</span><span>›</span>
+      <span id="crumbTitle">Cargando...</span>
+    </div>
+
+    <!-- Gallery -->
+    <div class="gallery" id="gallery">
+      <div class="gallery-main-wrap">
+        <img class="gallery-main" id="mainImage" src="../images/default-property.jpg" alt="Propiedad" onclick="openLightbox()" />
+        <button class="gallery-nav prev" onclick="galleryNav(-1)" aria-label="Anterior">&#8249;</button>
+        <button class="gallery-nav next" onclick="galleryNav(1)" aria-label="Siguiente">&#8250;</button>
+        <span class="gallery-counter" style="position:absolute;bottom:16px;right:16px" id="galleryCounter">1 / 1</span>
+      </div>
+      <div class="gallery-thumbs" id="galleryThumbs"></div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;align-items:center;justify-content:center;" onclick="closeLightbox()">
+      <button style="position:absolute;top:16px;right:20px;background:none;border:none;color:#fff;font-size:2rem;cursor:pointer;z-index:10;" onclick="closeLightbox()">&times;</button>
+      <button class="gallery-nav prev" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:1;width:50px;height:50px;font-size:1.6rem;" onclick="event.stopPropagation();lightboxNav(-1)" aria-label="Anterior">&#8249;</button>
+      <button class="gallery-nav next" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);opacity:1;width:50px;height:50px;font-size:1.6rem;" onclick="event.stopPropagation();lightboxNav(1)" aria-label="Siguiente">&#8250;</button>
+      <img id="lightboxImg" style="max-width:92vw;max-height:88vh;object-fit:contain;border-radius:8px;" onclick="event.stopPropagation();" />
+      <div id="lightboxCounter" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#fff;font-size:.9rem;background:rgba(0,0,0,.5);padding:6px 16px;border-radius:20px;"></div>
+    </div>
+
+    <div class="content" id="mainContent">
+      <!-- Main column -->
+      <div>
+        <div class="card">
+          <div class="price-section">
+            <span class="op-badge" id="opBadge">...</span>
+            <span class="type-badge" id="typeBadge">...</span>
+            <h1 style="font-size:1.5rem;margin:12px 0 8px" id="propTitle">Cargando propiedad...</h1>
+            <div class="price" id="propPrice"></div>
+            <div style="color:#888;font-size:.9rem;margin-top:4px" id="propLocation"></div>
+          </div>
+        </div>
+
+        <!-- Specs -->
+        <div class="card">
+          <div class="specs" id="specsGrid">
+            <div class="spec"><div class="value">--</div><div class="label">Habitaciones</div></div>
+            <div class="spec"><div class="value">--</div><div class="label">Baños</div></div>
+            <div class="spec"><div class="value">--</div><div class="label">Área</div></div>
+            <div class="spec"><div class="value">--</div><div class="label">Estacionamientos</div></div>
+          </div>
+        </div>
+
+        <!-- Video (hidden by default, shown if youtube_url exists) -->
+        <div class="card" id="videoCard" style="display:none;">
+          <h2>Video</h2>
+          <div class="video-container" id="videoContainer"></div>
+        </div>
+
+        <!-- Description -->
+        <div class="card">
+          <h2>Descripción</h2>
+          <div class="description" id="propDescription">Cargando...</div>
+        </div>
+
+        <!-- Features (hidden by default) -->
+        <div class="card" id="featuresCard" style="display:none;">
+          <h2>Características</h2>
+          <div class="features-list" id="featuresList"></div>
+        </div>
+
+        <!-- Map -->
+        <div class="card">
+          <h2>📍 Ubicación</h2>
+          <div id="map"></div>
+        </div>
+
+        <!-- Similar (filled by JS) -->
+        <div class="card" id="similarCard" style="display:none;">
+          <h2>Propiedades similares</h2>
+          <div class="similar-grid" id="similarGrid"></div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div class="card" style="position:sticky;top:80px">
+          <h2>Contactar</h2>
+          <a href="#" id="waLink" target="_blank" rel="noopener" class="contact-btn whatsapp">💬 WhatsApp</a>
+          <a href="#" id="phoneLink" class="contact-btn phone-btn">📞 Llamar</a>
+          <form id="contactForm" style="margin-top:16px">
+            <input type="hidden" name="property_id" id="contactPropId" value="">
+            <input name="name" placeholder="Tu nombre" required style="width:100%;padding:10px;margin-bottom:8px;border:1px solid #ddd;border-radius:6px;font-size:.9rem">
+            <input name="email" type="email" placeholder="Tu email" required style="width:100%;padding:10px;margin-bottom:8px;border:1px solid #ddd;border-radius:6px;font-size:.9rem">
+            <input name="phone" placeholder="Tu teléfono" style="width:100%;padding:10px;margin-bottom:8px;border:1px solid #ddd;border-radius:6px;font-size:.9rem">
+            <textarea name="message" placeholder="Mensaje..." rows="3" required style="width:100%;padding:10px;margin-bottom:8px;border:1px solid #ddd;border-radius:6px;font-size:.9rem;resize:vertical"></textarea>
+            <button type="submit" style="width:100%;padding:12px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;font-size:.95rem;font-weight:600;cursor:pointer">Enviar mensaje</button>
+          </form>
+          <div class="owner-info">
+            <h4>Publicado por</h4>
+            <p id="ownerName">Alianza 58</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Alianza 58 — Inmuebles en Venezuela</p>
+      <p style="margin-top:8px">
+        <a href="../nosotros.html">Nosotros</a> · <a href="../contacto.html">Contacto</a> · <a href="../privacidad.html">Privacidad</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Gallery data — will be filled by loadProperty()
+    var galleryImages = [];
+    var currentImg = 0;
+    var propertyData = null;
+    var mapInstance = null;
+
+    function getPropertySlug() {
+      var path = window.location.pathname;
+      var match = path.match(/\/propiedad\/([^\/\.]+)/);
+      return match ? match[1] : null;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function formatPrice(price, currency) {
+      if (!price || price === 0) return 'Consultar';
+      var formatted = Number(price).toLocaleString('es-VE');
+      return currency === 'USD' ? '$' + formatted : formatted + ' ' + (currency || '');
+    }
+
+    async function loadProperty() {
+      var slug = getPropertySlug();
+      if (!slug) {
+        showNotFound();
+        return;
+      }
+
+      try {
+        var resp = await fetch('/api/properties/' + slug);
+        if (!resp.ok) {
+          if (resp.status === 404) showNotFound();
+          else showNotFound();
+          return;
+        }
+        var data = await resp.json();
+        var p = data.property;
+        if (!p) {
+          showNotFound();
+          return;
+        }
+        propertyData = p;
+        renderProperty(p, data.similar || []);
+      } catch (e) {
+        console.error('Error loading property:', e);
+        showNotFound();
+      }
+    }
+
+    function renderProperty(p, similar) {
+      // Title
+      document.title = p.title + ' - Alianza 58';
+      document.getElementById('propTitle').textContent = p.title;
+
+      // Meta tags
+      document.querySelector('meta[name="description"]').setAttribute('content', (p.description || '').substring(0, 160));
+      document.querySelector('meta[property="og:title"]').setAttribute('content', p.title + ' - Alianza 58');
+      document.querySelector('meta[property="og:description"]').setAttribute('content', (p.description || '').substring(0, 200));
+      var canonicalUrl = 'https://alianza58.pages.dev/propiedad/' + p.slug;
+      document.querySelector('link[rel="canonical"]').setAttribute('href', canonicalUrl);
+      document.querySelector('meta[property="og:url"]').setAttribute('content', canonicalUrl);
+
+      // Breadcrumb
+      document.getElementById('crumbState').textContent = p.state || 'Barinas';
+      document.getElementById('crumbTitle').textContent = p.title;
+
+      // Price
+      var opText = p.operation_type === 'venta' ? 'En Venta' : (p.operation_type === 'arrendamiento' ? 'En Alquiler' : p.operation_type);
+      document.getElementById('opBadge').textContent = opText;
+      document.getElementById('typeBadge').textContent = '🏠 ' + (p.property_type || '');
+      document.getElementById('propPrice').textContent = formatPrice(p.price, p.currency);
+      document.getElementById('propLocation').innerHTML = '📍 ' + escapeHtml(p.city || '') + ', ' + escapeHtml(p.state || '') + (p.address ? ' — ' + escapeHtml(p.address) : '');
+
+      // Specs
+      var specs = document.getElementById('specsGrid');
+      specs.innerHTML =
+        '<div class="spec"><div class="value">' + (p.bedrooms || 0) + '</div><div class="label">Habitaciones</div></div>' +
+        '<div class="spec"><div class="value">' + (p.bathrooms || 0) + '</div><div class="label">Baños</div></div>' +
+        '<div class="spec"><div class="value">' + (p.area > 0 ? p.area + ' m²' : '--') + '</div><div class="label">Área</div></div>' +
+        '<div class="spec"><div class="value">' + (p.parking_spaces || 0) + '</div><div class="label">Estacionamientos</div></div>';
+
+      // Description
+      document.getElementById('propDescription').textContent = p.description || 'Sin descripción disponible.';
+
+      // Video
+      if (p.youtube_url) {
+        var match = p.youtube_url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|embed\/)([^&\?]+)/);
+        if (match) {
+          document.getElementById('videoCard').style.display = 'block';
+          document.getElementById('videoContainer').innerHTML =
+            '<iframe src="https://www.youtube.com/embed/' + match[1] + '" allowfullscreen></iframe>';
+        }
+      }
+
+      // Features
+      if (p.features) {
+        try {
+          var feats = JSON.parse(p.features);
+          if (Array.isArray(feats) && feats.length > 0) {
+            document.getElementById('featuresCard').style.display = 'block';
+            var list = document.getElementById('featuresList');
+            list.innerHTML = feats.map(function(f) {
+              return '<span class="feature-tag">' + escapeHtml(f) + '</span>';
+            }).join('');
+          }
+        } catch (e) {}
+      }
+
+      // Images
+      var images = (p.images || []).filter(function(img) {
+        return img.url && img.url.indexOf('default-property') === -1;
+      });
+      if (images.length === 0) {
+        images = [{ url: '/images/default-property.jpg' }];
+      }
+      galleryImages = images.map(function(img) {
+        return img.url.indexOf('http') === 0 ? img.url : img.url;
+      });
+
+      // Main image
+      document.getElementById('mainImage').src = galleryImages[0];
+      document.getElementById('mainImage').alt = p.title;
+      document.getElementById('galleryCounter').textContent = '1 / ' + galleryImages.length;
+
+      // Update og:image
+      var coverUrl = galleryImages[0];
+      if (coverUrl.indexOf('http') !== 0) {
+        coverUrl = 'https://alianza58.pages.dev' + coverUrl;
+      }
+      document.querySelector('meta[property="og:image"]').setAttribute('content', coverUrl);
+      document.querySelector('meta[name="twitter:image"]').setAttribute('content', coverUrl);
+
+      // Thumbs
+      var thumbsContainer = document.getElementById('galleryThumbs');
+      thumbsContainer.innerHTML = '';
+      galleryImages.forEach(function(url, i) {
+        var thumb = document.createElement('img');
+        thumb.src = url;
+        thumb.alt = 'Foto ' + (i + 1);
+        thumb.loading = 'lazy';
+        if (i === 0) thumb.classList.add('active');
+        thumb.onclick = function() { goToImage(i); };
+        thumbsContainer.appendChild(thumb);
+      });
+
+      // Map
+      var lat = p.lat || 8.6226;
+      var lng = p.lng || -70.2075;
+      if (mapInstance) {
+        mapInstance.remove();
+      }
+      mapInstance = L.map('map').setView([lat, lng], 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+      }).addTo(mapInstance);
+      L.marker([lat, lng]).addTo(mapInstance)
+        .bindPopup('<strong>' + escapeHtml(p.title) + '</strong><br>' + escapeHtml(p.address || '') + '<br>' + escapeHtml(p.city || '') + ', ' + escapeHtml(p.state || ''))
+        .openPopup();
+
+      // Contact
+      var phone = p.owner_phone || '04126942043';
+      var whatsapp = p.owner_whatsapp || '584126942043';
+      var waText = 'Hola, estoy interesado/a en la propiedad: ' + p.title + ' (' + canonicalUrl + ')';
+      document.getElementById('waLink').href = 'https://wa.me/' + whatsapp + '?text=' + encodeURIComponent(waText);
+      document.getElementById('phoneLink').href = 'tel:' + phone;
+      document.getElementById('phoneLink').textContent = '📞 ' + phone;
+      document.getElementById('contactPropId').value = p.id;
+      document.getElementById('ownerName').textContent = p.owner_name || 'Alianza 58';
+
+      // Similar
+      if (similar && similar.length > 0) {
+        document.getElementById('similarCard').style.display = 'block';
+        var grid = document.getElementById('similarGrid');
+        grid.innerHTML = similar.map(function(s) {
+          var sCover = s.cover_image || '/images/default-property.jpg';
+          if (sCover.indexOf('http') !== 0 && sCover.indexOf('/') !== 0) {
+            sCover = '/' + sCover;
+          }
+          return '<a href="/propiedad/' + s.slug + '" class="similar-card">' +
+            '<img src="' + sCover + '" alt="' + escapeHtml(s.title) + '" loading="lazy" />' +
+            '<div class="info">' +
+              '<div class="sprice">' + formatPrice(s.price, s.currency) + '</div>' +
+              '<div class="stitle">' + escapeHtml(s.title) + '</div>' +
+              '<div class="slocation">' + escapeHtml(s.city || '') + ', ' + escapeHtml(s.state || '') + '</div>' +
+            '</div>' +
+          '</a>';
+        }).join('');
+      }
+
+      // Share buttons
+      addShareButtons(p, canonicalUrl);
+    }
+
+    function addShareButtons(p, shareUrl) {
+      var shareText = p.title + ' - ' + formatPrice(p.price, p.currency);
+      var container = document.querySelector('.price-section');
+      if (!container) return;
+      var shareDiv = document.createElement('div');
+      shareDiv.style.cssText = 'display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;';
+      shareDiv.innerHTML =
+        '<a href="https://wa.me/?text=' + encodeURIComponent(shareText + ' ' + shareUrl) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#25d366;color:#fff;border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>' +
+        '<button onclick="navigator.clipboard.writeText(\'' + shareUrl + '\').then(function(){this.textContent=\'✓ Enlace copiado\';this.style.background=\'#059669\'}.bind(this))" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;"><i class="fa-solid fa-link"></i> Copiar enlace</button>' +
+        '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#1877f2;color:#fff;border-radius:8px;font-size:.85rem;font-weight:600;text-decoration:none;"><i class="fa-brands fa-facebook-f"></i> Compartir</a>';
+      container.appendChild(shareDiv);
+    }
+
+    function showNotFound() {
+      document.getElementById('mainContent').innerHTML =
+        '<div class="not-found">' +
+          '<h1>404</h1>' +
+          '<h2>Propiedad no encontrada</h2>' +
+          '<p>La propiedad que buscas no existe o ya no está disponible.</p>' +
+          '<a href="../propiedades.html">Ver propiedades disponibles</a>' +
+        '</div>';
+      document.getElementById('gallery').style.display = 'none';
+      document.getElementById('breadcrumb').style.display = 'none';
+    }
+
+    // Gallery functions
+    function goToImage(idx) {
+      if (idx < 0 || idx >= galleryImages.length) return;
+      currentImg = idx;
+      var main = document.getElementById('mainImage');
+      if (main) {
+        main.classList.add('loading');
+        var img = new Image();
+        img.onload = function() { main.src = img.src; main.classList.remove('loading'); };
+        img.src = galleryImages[idx];
+      }
+      var counter = document.getElementById('galleryCounter');
+      if (counter) counter.textContent = (idx + 1) + ' / ' + galleryImages.length;
+      document.querySelectorAll('#galleryThumbs img').forEach(function(t, i) {
+        t.classList.toggle('active', i === idx);
+      });
+      var activeThumb = document.querySelector('#galleryThumbs img.active');
+      if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function galleryNav(dir) {
+      if (!galleryImages.length) return;
+      var next = currentImg + dir;
+      if (next < 0) next = galleryImages.length - 1;
+      if (next >= galleryImages.length) next = 0;
+      goToImage(next);
+    }
+
+    function openLightbox() {
+      var lb = document.getElementById('lightbox');
+      if (!lb || !galleryImages.length) return;
+      document.getElementById('lightboxImg').src = galleryImages[currentImg];
+      document.getElementById('lightboxCounter').textContent = (currentImg + 1) + ' / ' + galleryImages.length;
+      lb.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function lightboxNav(dir) {
+      var next = currentImg + dir;
+      if (!galleryImages.length) return;
+      if (next < 0) next = galleryImages.length - 1;
+      if (next >= galleryImages.length) next = 0;
+      currentImg = next;
+      document.getElementById('lightboxImg').src = galleryImages[next];
+      document.getElementById('lightboxCounter').textContent = (next + 1) + ' / ' + galleryImages.length;
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('lightbox').style.display === 'flex') {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') lightboxNav(-1);
+        if (e.key === 'ArrowRight') lightboxNav(1);
+      } else {
+        if (e.key === 'ArrowLeft') galleryNav(-1);
+        if (e.key === 'ArrowRight') galleryNav(1);
+      }
+    });
+
+    // Touch swipe
+    (function() {
+      var sx = 0, sy = 0, isDragging = false;
+      var mainImg = document.getElementById('mainImage');
+      var lightbox = document.getElementById('lightbox');
+      var lightboxImg = document.getElementById('lightboxImg');
+
+      function handleSwipe(target, dir) {
+        if (target === lightbox || target === lightboxImg) {
+          lightboxNav(dir);
+        } else {
+          galleryNav(dir);
+        }
+      }
+      function onTouchStart(e) {
+        sx = e.touches[0].clientX;
+        sy = e.touches[0].clientY;
+        isDragging = true;
+      }
+      function onTouchEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        var dx = e.changedTouches[0].clientX - sx;
+        var dy = e.changedTouches[0].clientY - sy;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+          handleSwipe(this, dx < 0 ? 1 : -1);
+        }
+      }
+      if (mainImg) { mainImg.addEventListener('touchstart', onTouchStart, {passive:true}); mainImg.addEventListener('touchend', onTouchEnd); }
+      if (lightbox) { lightbox.addEventListener('touchstart', onTouchStart, {passive:true}); lightbox.addEventListener('touchend', onTouchEnd); }
+    })();
+
+    // Contact form
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var btn = this.querySelector('button[type=submit]');
+      btn.textContent = 'Enviando...';
+      btn.disabled = true;
+      try {
+        var fd = new FormData(this);
+        var obj = {};
+        fd.forEach(function(v, k) { obj[k] = v; });
+        var res = await fetch('/api/contacts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(obj)
+        });
+        if (res.ok) {
+          btn.textContent = '✓ Mensaje enviado';
+          btn.style.background = '#059669';
+          this.reset();
+          setTimeout(function() { btn.textContent = 'Enviar mensaje'; btn.style.background = '#1a1a2e'; btn.disabled = false; }, 3000);
+        } else {
+          throw new Error('Error');
+        }
+      } catch(err) {
+        btn.textContent = 'Error. Intenta de nuevo.';
+        btn.disabled = false;
+      }
+    });
+
+    // Load property on page load
+    loadProperty();
+  </script>
+</body>
+</html>

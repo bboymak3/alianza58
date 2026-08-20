@@ -1,34 +1,24 @@
 # alianza58 - Cloudflare Pages Headers
+# Configuración MÍNIMA — solo lo esencial.
+# No añadir headers restrictivos que puedan romper animaciones, iframes, etc.
 
-# Seguridad global para todas las respuestas
+# Headers globales mínimos
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
 
-# API - CORS headers. NO poner Cache-Control: no-store global porque
-# rompe el caching de /api/serve (las imágenes deben poder cachearse).
-# El Cache-Control lo establece cada endpoint individualmente.
+# API - CORS headers
 /api/*
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
   Access-Control-Allow-Headers: Content-Type, Authorization
 
-# Archivos estáticos - cache con revalidación
+# CSS/JS - cache corto
 /css/*
   Cache-Control: public, max-age=3600, must-revalidate
 /js/*
   Cache-Control: public, max-age=3600, must-revalidate
+
+# Imágenes - cache largo
 /images/*
   Cache-Control: public, max-age=604800
-
-# Service Worker - nunca cachear
-/sw.js
-  Cache-Control: no-cache, no-store, must-revalidate
-
-# NOTA IMPORTANTE sobre /api/serve:
-# NO definimos Content-Type para /api/serve aquí porque el endpoint lo setea
-# dinámicamente según el tipo de imagen. Si lo definimos aquí, Cloudflare Pages
-# sobreescribe el header del Function y rompe el Content-Type correcto.

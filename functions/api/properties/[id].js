@@ -186,16 +186,20 @@ export async function onRequestPut({ request, env, params }) {
     values.push(slugify(body.state));
   }
 
-  if (updates.length === 0) {
+  // Si no hay campos para actualizar PERO hay imágenes, permitir el PUT
+  // (solo para actualizar imágenes/portada)
+  if (updates.length === 0 && !Array.isArray(body.images)) {
     return jsonError('No se proporcionaron campos para actualizar', 400);
   }
 
-  updates.push("updated_at = datetime('now')");
-  values.push(id);
+  if (updates.length > 0) {
+    updates.push("updated_at = datetime('now')");
+    values.push(id);
 
-  await env.DB.prepare(
-    `UPDATE properties SET ${updates.join(', ')} WHERE id = ?`
-  ).bind(...values).run();
+    await env.DB.prepare(
+      `UPDATE properties SET ${updates.join(', ')} WHERE id = ?`
+    ).bind(...values).run();
+  }
 
   // Manejo de imágenes: si body.images viene como array, reemplazar
   if (Array.isArray(body.images)) {

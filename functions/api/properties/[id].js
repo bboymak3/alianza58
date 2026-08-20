@@ -207,11 +207,27 @@ export async function onRequestPut({ request, env, params }) {
     await env.DB.prepare('DELETE FROM property_images WHERE property_id = ?').bind(id).run();
 
     if (body.images.length > 0) {
+      // Primero, determinar si alguna imagen tiene is_cover=1 explícito
+      let hasExplicitCover = false;
+      for (const item of body.images) {
+        if (typeof item === 'object' && item.is_cover === 1) {
+          hasExplicitCover = true;
+          break;
+        }
+      }
+
       for (let i = 0; i < body.images.length; i++) {
         const item = body.images[i];
         // Aceptar tanto string (URL) como objeto {url, is_cover}
         const url = typeof item === 'string' ? item : item.url;
-        const isCover = typeof item === 'object' && item.is_cover === 1 ? 1 : (i === 0 ? 1 : 0);
+        // Si alguna imagen tiene is_cover=1 explícito, respetar los valores
+        // Si ninguna tiene, la primera es cover por defecto
+        let isCover;
+        if (hasExplicitCover) {
+          isCover = (typeof item === 'object' && item.is_cover === 1) ? 1 : 0;
+        } else {
+          isCover = i === 0 ? 1 : 0;
+        }
         if (!url) continue;
         let r2Key = null;
         const match = url.match(/[?&]key=([^&]+)/);

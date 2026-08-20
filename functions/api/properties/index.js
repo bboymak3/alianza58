@@ -315,12 +315,26 @@ export async function onRequestPost({ request, env }) {
   // Asociar imágenes si vienen en el body
   let attachedImages = [];
   if (Array.isArray(images) && images.length > 0) {
+    // Determinar si alguna imagen tiene is_cover=1 explícito
+    let hasExplicitCover = false;
+    for (const item of images) {
+      if (typeof item === 'object' && item.is_cover === 1) {
+        hasExplicitCover = true;
+        break;
+      }
+    }
+
     for (let i = 0; i < images.length; i++) {
       const item = images[i];
       // Aceptar tanto string (URL) como objeto {url, is_cover}
       const url = typeof item === 'string' ? item : item.url;
-      const isCover = typeof item === 'object' && item.is_cover === 1 ? 1 : (i === 0 ? 1 : 0);
       if (!url) continue;
+      let isCover;
+      if (hasExplicitCover) {
+        isCover = (typeof item === 'object' && item.is_cover === 1) ? 1 : 0;
+      } else {
+        isCover = i === 0 ? 1 : 0;
+      }
       // La URL viene como /api/serve?key=... — extraer la r2_key
       let r2Key = null;
       const match = url.match(/[?&]key=([^&]+)/);

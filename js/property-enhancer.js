@@ -212,7 +212,52 @@
 
     updateGallery(property);
     updateSpecs(property);  // Actualizar specs (incluyendo mts2 terreno y construcción)
+    updateFeatures(property);  // Actualizar características adicionales
     updateSimilarProperties();  // no await — no bloquea
+  }
+
+  // ─── Actualizar características adicionales ───────────────────
+  function updateFeatures(p) {
+    if (!p.features) return;
+    try {
+      var feats = JSON.parse(p.features);
+      if (!Array.isArray(feats) || feats.length === 0) return;
+
+      var FEATURE_LABELS = {
+        wifi: '📶 WiFi / Internet', piscina: '🏊 Piscina',
+        tanque_agua: '💧 Tanque de Agua', bomba_agua: '🚿 Bomba de Agua',
+        areas_verdes: '🌳 Áreas Verdes', estacionamiento: '🚗 Estacionamiento',
+        vigilancia: '🔒 Vigilancia 24h', aire_acondicionado: '❄️ Aire Acondicionado',
+        cocina_integral: '🍳 Cocina Integral', calentador: '♨️ Calentador de Agua',
+        terraza: '🌅 Terraza / Balcón', parrillero: '🔥 Parrillero / Quincho',
+        closet: '👕 Closets / Armarios', porton_electrico: '⚙️ Portón Eléctrico',
+        energia_solar: '☀️ Energía Solar', pisos_ceramica: '▦ Pisos de Cerámica',
+        gas_domestico: '🔥 Gas Doméstico', electricidad: '⚡ Electricidad Estabilizada',
+        patio: '🏡 Patio', patio_techado: '🏠 Patio Techado',
+        cerca_electrica: '⚡ Cerca Eléctrica', pozo_agua: '🛢️ Pozo de Agua',
+        arboles_frutales: '🍎 Árboles Frutales', jardines: '🌷 Jardines',
+        transformador: '🔌 Transformador'
+      };
+
+      // Buscar o crear sección de características
+      var featuresCard = document.querySelector('.features-list, #featuresList');
+      if (!featuresCard) {
+        // Crear la sección si no existe
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = '<h2>Características</h2><div class="features-list"></div>';
+        var descCard = document.querySelector('.card');
+        if (descCard && descCard.parentNode) {
+          descCard.parentNode.insertBefore(card, descCard.nextSibling);
+        }
+        featuresCard = card.querySelector('.features-list');
+      }
+
+      featuresCard.innerHTML = feats.map(function(f) {
+        var label = FEATURE_LABELS[f] || f.replace(/_/g, ' ');
+        return '<span class="feature-tag" style="background:#eff6ff;color:#2563eb;padding:4px 12px;border-radius:20px;font-size:.8rem;display:inline-block;margin:2px;">' + label + '</span>';
+      }).join('');
+    } catch (e) {}
   }
 
   // ─── Actualizar specs (habitaciones, baños, mts2, etc.) ──────

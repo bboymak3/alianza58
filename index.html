@@ -97,9 +97,31 @@
     <canvas id="particleCanvas"></canvas>
   </div>
 
-  <!-- Loading screen auto-hide: se oculta a los 2.5s (animación visible) o antes si falla -->
+  <!-- Loading screen auto-hide: 2 veces al día por usuario (localStorage) -->
   <script>
     (function() {
+      var STORAGE_KEY = 'a58_loading_screen_count';
+      var MAX_PER_DAY = 2;
+
+      // Obtener fecha de hoy en formato YYYY-MM-DD
+      var today = new Date().toISOString().split('T')[0];
+
+      // Leer registro de vistas del localStorage
+      var record;
+      try {
+        record = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      } catch(e) {
+        record = {};
+      }
+
+      // Si es un día nuevo, resetear contador
+      if (record.date !== today) {
+        record = { date: today, count: 0 };
+      }
+
+      // Verificar si ya vio la animación el máximo de veces hoy
+      var shouldShowAnimation = record.count < MAX_PER_DAY;
+
       function hideLS() {
         var ls = document.getElementById('loadingScreen');
         if (ls) {
@@ -109,11 +131,23 @@
           }, 900);
         }
       }
-      // Dejar que la animación se reproduzca 2.5s, luego ocultar
-      // Si el load dispara antes, esperar igual a 2.5s para no cortar la animación
-      setTimeout(hideLS, 2500);
-      // Backup: si algo falla, a los 5s forzar
-      setTimeout(hideLS, 5000);
+
+      if (shouldShowAnimation) {
+        // Mostrar animación, ocultar a los 2.5s
+        // Incrementar contador
+        record.count = (record.count || 0) + 1;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
+        } catch(e) {}
+
+        // Dejar que la animación se reproduzca 2.5s, luego ocultar
+        setTimeout(hideLS, 2500);
+        // Backup: si algo falla, a los 5s forzar
+        setTimeout(hideLS, 5000);
+      } else {
+        // Ya vio la animación 2 veces hoy — ocultar inmediatamente
+        hideLS();
+      }
     })();
   </script>
 
@@ -416,7 +450,7 @@
 
   <!-- ============ SCRIPTS ============ -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/app.js?v=3"></script>
   <script>
     // ── EPIC LOGO ASSEMBLY ANIMATION ──────────────────────
     (function() {

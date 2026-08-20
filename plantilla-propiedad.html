@@ -360,7 +360,34 @@
         }
       }
 
-      // Features
+      // Features — mostrar con etiquetas legibles e iconos
+      var FEATURE_LABELS = {
+        wifi: '📶 WiFi / Internet',
+        piscina: '🏊 Piscina',
+        tanque_agua: '💧 Tanque de Agua',
+        bomba_agua: '🚿 Bomba de Agua',
+        areas_verdes: '🌳 Áreas Verdes',
+        estacionamiento: '🚗 Estacionamiento',
+        vigilancia: '🔒 Vigilancia 24h',
+        aire_acondicionado: '❄️ Aire Acondicionado',
+        cocina_integral: '🍳 Cocina Integral',
+        calentador: '♨️ Calentador de Agua',
+        terraza: '🌅 Terraza / Balcón',
+        parrillero: '🔥 Parrillero / Quincho',
+        closet: '👕 Closets / Armarios',
+        porton_electrico: '⚙️ Portón Eléctrico',
+        energia_solar: '☀️ Energía Solar',
+        pisos_ceramica: ' TILE Pisos de Cerámica',
+        gas_domestico: '🔥 Gas Doméstico',
+        electricidad: '⚡ Electricidad Estabilizada',
+        patio: '🏡 Patio',
+        patio_techado: '🏠 Patio Techado',
+        cerca_electrica: '⚡ Cerca Eléctrica',
+        pozo_agua: '🛢️ Pozo de Agua',
+        arboles_frutales: '🍎 Árboles Frutales',
+        jardines: '🌷 Jardines',
+        transformador: '🔌 Transformador'
+      };
       if (p.features) {
         try {
           var feats = JSON.parse(p.features);
@@ -368,7 +395,8 @@
             document.getElementById('featuresCard').style.display = 'block';
             var list = document.getElementById('featuresList');
             list.innerHTML = feats.map(function(f) {
-              return '<span class="feature-tag">' + escapeHtml(f) + '</span>';
+              var label = FEATURE_LABELS[f] || f.replace(/_/g, ' ');
+              return '<span class="feature-tag">' + escapeHtml(label) + '</span>';
             }).join('');
           }
         } catch (e) {}

@@ -67,6 +67,21 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Override mobile properties-grid para garantizar 2 columnas -->
+  <style>
+    @media (max-width: 768px) {
+      .properties-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+      .prop-card-img {
+        aspect-ratio: 4 / 3 !important;
+      }
+      .prop-card-title { font-size: 0.78rem !important; line-height: 1.2 !important; }
+      .prop-card-price { font-size: 0.72rem !important; padding: 3px 8px !important; top: 6px !important; left: 6px !important; }
+      .prop-card-body { padding: 6px 8px 8px !important; }
+    }
+  </style>
 </head>
 <body>
 

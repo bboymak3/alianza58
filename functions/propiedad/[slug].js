@@ -1,11 +1,5 @@
 // functions/propiedad/[slug].js
 // GET /propiedad/:slug — Sirve la página de detalle de una propiedad.
-//
-// Estrategia:
-//   1. Si existe un HTML estático para ese slug (propiedad/{slug}.html),
-//      servirlo directamente. Esto preserva las páginas estáticas existentes.
-//   2. Si NO existe, servir la plantilla genérica /plantilla-propiedad.html
-//      que carga los datos via JS desde la API.
 
 export async function onRequestGet({ request, env, params }) {
   const slug = params.slug;
@@ -24,12 +18,16 @@ export async function onRequestGet({ request, env, params }) {
       });
       if (staticResp.ok) {
         const ct = staticResp.headers.get('Content-Type') || '';
-        if (ct.includes('text/html')) {
-          return new Response(staticResp.body, {
+        const body = await staticResp.text();
+        // Verificar que NO sea la homepage (que tiene el title de Alianza 58)
+        // y que sea un HTML de propiedad (debe tener class="gallery" o id="mainImage")
+        if (ct.includes('text/html') && (body.includes('id="mainImage"') || body.includes('class="gallery"'))) {
+          return new Response(body, {
             status: 200,
             headers: {
               'Content-Type': 'text/html; charset=utf-8',
               'Cache-Control': 'public, max-age=60',
+              'X-Source': 'static',
             },
           });
         }
@@ -39,18 +37,20 @@ export async function onRequestGet({ request, env, params }) {
     }
   }
 
-  // 2. Servir la plantilla genérica (está en la raíz, fuera de /propiedad/)
+  // 2. Servir la plantilla genérica
   if (env.ASSETS) {
     try {
       const templateResp = await env.ASSETS.fetch(origin + '/plantilla-propiedad.html', {
         redirect: 'follow',
       });
       if (templateResp.ok) {
-        return new Response(templateResp.body, {
+        const body = await templateResp.text();
+        return new Response(body, {
           status: 200,
           headers: {
             'Content-Type': 'text/html; charset=utf-8',
             'Cache-Control': 'public, max-age=60',
+            'X-Source': 'template',
           },
         });
       }
@@ -60,7 +60,7 @@ export async function onRequestGet({ request, env, params }) {
   }
 
   // 3. Fallback: 404
-  return new Response('Propiedad no encontrada', {
+  return new Response('Propiedad no encontrada - slug: ' + slug + ', assets: ' + (env.ASSETS ? 'yes' : 'no'), {
     status: 404,
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   });

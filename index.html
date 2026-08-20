@@ -560,7 +560,7 @@
         if (b.link && b.link_text) {
           const badge = hero.querySelector('.hero-badge');
           if (badge) {
-            badge.innerHTML = '<a href="'%20+%20b.link%20+%20'.html" style="color:#fff;text-decoration:none;background:rgba(192,57,43,0.9);padding:8px 20px;border-radius:30px;font-weight:600;font-size:0.85rem;display:inline-block;margin-top:4px;">' + b.link_text + ' →</a>';
+            badge.innerHTML = '<a href="' + b.link + '.html" style="color:#fff;text-decoration:none;background:rgba(192,57,43,0.9);padding:8px 20px;border-radius:30px;font-weight:600;font-size:0.85rem;display:inline-block;margin-top:4px;">' + b.link_text + ' →</a>';
           }
         }
       } catch(e) { /* Banner API not available, show defaults */ }

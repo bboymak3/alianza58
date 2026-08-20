@@ -547,7 +547,7 @@
         if (b.link && b.link_text) {
           const badge = hero.querySelector('.hero-badge');
           if (badge) {
-            badge.innerHTML = '<a href="https://alianza58.pages.dev/cuenta/'&#32;+&#32;b.link&#32;+&#32;'" style="color:#fff;text-decoration:none;background:rgba(192,57,43,0.9);padding:8px 20px;border-radius:30px;font-weight:600;font-size:0.85rem;display:inline-block;margin-top:4px;">' + b.link_text + ' →</a>';
+            badge.innerHTML = '<a href="https://alianza58.pages.dev/cuenta/' + b.link + '" style="color:#fff;text-decoration:none;background:rgba(192,57,43,0.9);padding:8px 20px;border-radius:30px;font-weight:600;font-size:0.85rem;display:inline-block;margin-top:4px;">' + b.link_text + ' →</a>';
           }
         }
       } catch(e) { /* Banner API not available, show defaults */ }

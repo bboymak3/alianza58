@@ -648,7 +648,7 @@
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById(previewId).innerHTML = '<img src="admin/'%20+%20e.target.result%20+%20'.html" style="max-height:70px;max-width:100%;object-fit:contain;">';
+        document.getElementById(previewId).innerHTML = '<img src="' + e.target.result + '" style="max-height:70px;max-width:100%;object-fit:contain;">';
       };
       reader.readAsDataURL(file);
     }

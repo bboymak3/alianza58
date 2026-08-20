@@ -3387,6 +3387,9 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ── Scanline Glitch Overlay ──────────────────────────────── */
+/* DESACTIVADO: causaba parpadeo negro al cargar la página (efecto "TV vieja")
+   que se veía como pantalla negra en algunos dispositivos.
+   Para reactivar, cambiar 'opacity: 0' abajo y descomentar la línea 'animation'.
 .scanline-overlay {
   position: absolute;
   inset: 0;
@@ -3413,6 +3416,10 @@ input[type="range"]::-moz-range-thumb {
   70%  { opacity: 0.4; }
   85%  { opacity: 0.1; }
   100% { opacity: 0; }
+}
+*/
+.scanline-overlay {
+  display: none !important;
 }
 
 /* ── Particle Canvas ──────────────────────────────── */

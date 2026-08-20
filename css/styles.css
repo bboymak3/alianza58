@@ -3080,7 +3080,39 @@ input[type="range"]::-moz-range-thumb {
     grid-template-columns: 1fr;
   }
 
-  .properties-grid,
+  /* En mobile pequeño, mostrar 2 propiedades lado a lado con aspect-ratio 4:3 */
+  .properties-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Compactar las cards en mobile */
+  .prop-card-img {
+    aspect-ratio: 4 / 3;
+  }
+
+  /* Texto más pequeño en cards mobile */
+  .prop-card-title {
+    font-size: 0.78rem;
+    line-height: 1.2;
+  }
+  .prop-card-price {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    top: 6px;
+    left: 6px;
+  }
+  .prop-card-location {
+    font-size: 0.68rem;
+  }
+  .prop-card-specs {
+    font-size: 0.65rem;
+    gap: 4px;
+  }
+  .prop-card-body {
+    padding: 6px 8px 8px;
+  }
+
   .services-grid {
     grid-template-columns: 1fr;
   }

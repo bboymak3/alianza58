@@ -484,6 +484,13 @@
                   <label for="featured">Marcar como propiedad destacada</label>
                 </div>
               </div>
+              <div class="form-group" style="margin-top:16px;">
+                <label for="sort_order">Posición / Orden en listados</label>
+                <input type="number" id="sort_order" name="sort_order" min="0" max="9999" value="0" style="width:120px;">
+                <small style="display:block;margin-top:4px;color:#888;font-size:12px;">
+                  Número menor = aparece primero. 0 = orden automático por fecha.
+                </small>
+              </div>
             </div>
           </div>
         </div>
@@ -571,6 +578,9 @@
         });
 
         if (p.featured === 1 || p.featured === true) document.getElementById('featured').checked = true;
+        if (document.getElementById('sort_order')) {
+          document.getElementById('sort_order').value = p.sort_order || 0;
+        }
 
         // Load features checkboxes
         if (p.features) {
@@ -704,6 +714,7 @@
         youtube_url: document.getElementById('youtube_url').value.trim() || null,
         status: document.getElementById('status').value,
         featured: document.getElementById('featured').checked ? 1 : 0,
+        sort_order: parseInt(document.getElementById('sort_order').value) || 0,
       };
 
       // Collect features

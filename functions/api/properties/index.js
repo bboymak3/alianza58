@@ -155,13 +155,13 @@ export async function onRequestGet({ request, env }) {
            p.parking_spaces, p.floors, p.year_built, p.address, p.city, p.state,
            p.state_slug, p.lat, p.lng, p.youtube_url, p.featured, p.status,
            p.views, p.created_at, p.updated_at, p.expires_at,
-           p.seo_title, p.seo_description, p.features,
+           p.seo_title, p.seo_description, p.features, p.sort_order,
            u.name as owner_name, u.email as owner_email, u.phone as owner_phone,
            u.whatsapp as owner_whatsapp
     FROM properties p
     LEFT JOIN users u ON p.user_id = u.id
     ${whereClause}
-    ORDER BY p.featured DESC, ${orderClause}
+    ORDER BY p.featured DESC, p.sort_order ASC, ${orderClause}
     LIMIT ? OFFSET ?
   `;
 
@@ -235,7 +235,7 @@ export async function onRequestPost({ request, env }) {
     title, description, property_type, operation_type, price, currency,
     area, bedrooms, bathrooms, parking_spaces, floors, year_built,
     address, city, state, lat, lng, youtube_url, featured, status,
-    seo_title, seo_description, features,
+    seo_title, seo_description, features, sort_order,
     images,  // ← array de URLs de imágenes subidas previamente
   } = body;
 
@@ -263,8 +263,8 @@ export async function onRequestPost({ request, env }) {
       user_id, title, slug, description, property_type, operation_type,
       price, currency, area, bedrooms, bathrooms, parking_spaces, floors, year_built,
       address, city, state, state_slug, lat, lng, youtube_url, featured, status, views,
-      created_at, updated_at, seo_title, seo_description, features
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'), ?, ?, ?)`
+      created_at, updated_at, seo_title, seo_description, features, sort_order
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'), ?, ?, ?, ?)`
   ).bind(
     user.id,
     title.trim(),
@@ -291,7 +291,8 @@ export async function onRequestPost({ request, env }) {
     finalStatus,
     seo_title || null,
     seo_description || null,
-    features || null
+    features || null,
+    parseInt(sort_order) || 0
   ).run();
 
   const propertyId = result.meta.last_row_id;

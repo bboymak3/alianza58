@@ -144,7 +144,7 @@ export async function onRequestPut({ request, env, params }) {
     'title', 'description', 'property_type', 'operation_type', 'price', 'currency',
     'area', 'bedrooms', 'bathrooms', 'parking_spaces', 'floors', 'year_built',
     'address', 'city', 'state', 'lat', 'lng', 'youtube_url', 'featured', 'status',
-    'seo_title', 'seo_description', 'features',
+    'seo_title', 'seo_description', 'features', 'sort_order',
   ];
 
   const updates = [];

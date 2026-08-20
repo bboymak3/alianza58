@@ -4,40 +4,48 @@
 // Estrategia:
 //   1. Si existe un HTML estático para ese slug (propiedad/{slug}.html),
 //      servirlo directamente. Esto preserva las páginas estáticas existentes.
-//   2. Si NO existe, servir la plantilla genérica _plantilla.html que
-//      carga los datos via JS desde la API.
+//   2. Si NO existe, servir la plantilla genérica que carga datos via JS.
 
 export async function onRequestGet({ request, env, params }) {
   const slug = params.slug;
 
-  if (!slug || slug === '_plantilla') {
-    // Si es la plantilla misma, devolver 404
+  if (!slug || slug === '_plantilla' || slug === '_plantilla.html') {
     return new Response('Not found', { status: 404 });
   }
 
-  // 1. Intentar servir el HTML estático si existe
+  const origin = new URL(request.url).origin;
+
+  // 1. Intentar servir el HTML estático si existe (sin .html — Cloudflare sirve así)
   if (env.ASSETS) {
     try {
-      const staticUrl = new URL(request.url);
-      staticUrl.pathname = '/propiedad/' + slug + '.html';
-      const staticResp = await env.ASSETS.fetch(staticUrl.toString());
-      if (staticResp.ok) {
-        // El HTML estático existe — servirlo tal cual
-        return staticResp;
+      // Cloudflare Pages sirve /propiedad/casa-moderna-urb-barinas.html cuando
+      // se pide /propiedad/casa-moderna-urb-barinas (sin .html).
+      // Pero desde una Function, necesitamos pedir la URL sin .html
+      // y seguir redirects automáticamente con redirect: 'follow'
+      const staticResp = await env.ASSETS.fetch(origin + '/propiedad/' + slug, {
+        redirect: 'follow',
+      });
+      if (staticResp.ok && staticResp.headers.get('Content-Type')?.includes('text/html')) {
+        return new Response(staticResp.body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'public, max-age=60',
+          },
+        });
       }
     } catch (e) {
       // No existe el estático, continuar
     }
   }
 
-  // 2. Servir la plantilla genérica
+  // 2. Servir la plantilla genérica (pedir sin .html para evitar redirect 308)
   if (env.ASSETS) {
     try {
-      const templateUrl = new URL(request.url);
-      templateUrl.pathname = '/propiedad/_plantilla.html';
-      const templateResp = await env.ASSETS.fetch(templateUrl.toString());
+      const templateResp = await env.ASSETS.fetch(origin + '/propiedad/_plantilla', {
+        redirect: 'follow',
+      });
       if (templateResp.ok) {
-        // Devolver la plantilla — el JS dentro leerá el slug de window.location
         return new Response(templateResp.body, {
           status: 200,
           headers: {

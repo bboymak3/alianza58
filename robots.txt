@@ -1,0 +1,19 @@
+# alianza58 - robots.txt
+# https://developers.cloudflare.com/pages/configuration/robots-txt/
+
+# Permitir todos los robots
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /cuenta/
+Disallow: /api/auth/
+Disallow: /api/contacts
+Disallow: /api/favorites
+Disallow: /api/dashboard
+Disallow: /api/users
+Disallow: /api/upload
+Disallow: /api/property-images
+
+# Sitemap
+Sitemap: https://alianza58.pages.dev/sitemap.xml

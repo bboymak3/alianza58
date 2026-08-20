@@ -350,6 +350,31 @@ function createPropertyCard(prop) {
     specsHtml += '<span class="prop-card-spec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 12h16a1 1 0 011 1v3a4 4 0 01-4 4H7a4 4 0 01-4-4v-3a1 1 0 011-1z"/><path d="M6 12V5a2 2 0 012-2h8a2 2 0 012 2v7"/></svg>' + baths + ' Baños</span>';
   }
 
+  // Características adicionales (mostrar como tags pequeños)
+  var FEATURE_ICONS = {
+    wifi: '📶', piscina: '🏊', tanque_agua: '💧', bomba_agua: '🚿',
+    areas_verdes: '🌳', estacionamiento: '🚗', vigilancia: '🔒',
+    aire_acondicionado: '❄️', cocina_integral: '🍳', calentador: '♨️',
+    terraza: '🌅', parrillero: '🔥', closet: '👕', porton_electrico: '⚙️',
+    energia_solar: '☀️', pisos_ceramica: '▦', gas_domestico: '🔥',
+    electricidad: '⚡', patio: '🏡', patio_techado: '🏠',
+    cerca_electrica: '⚡', pozo_agua: '🛢️', arboles_frutales: '🍎',
+    jardines: '🌷', transformador: '🔌'
+  };
+  var featuresHtml = '';
+  if (prop.features) {
+    try {
+      var feats = typeof prop.features === 'string' ? JSON.parse(prop.features) : prop.features;
+      if (Array.isArray(feats)) {
+        // Mostrar máximo 4 características para no saturar la tarjeta
+        feats.slice(0, 4).forEach(function(f) {
+          var icon = FEATURE_ICONS[f] || '✓';
+          featuresHtml += '<span class="prop-card-feature">' + icon + ' ' + f.replace(/_/g, ' ') + '</span>';
+        });
+      }
+    } catch(e) {}
+  }
+
   let featuredHtml = '';
   if (isFeatured) {
     featuredHtml = '<span class="prop-card-featured">&#9733; Destacado</span>';
@@ -373,6 +398,7 @@ function createPropertyCard(prop) {
           location +
         '</p>' +
         (specsHtml ? '<div class="prop-card-specs">' + specsHtml + '</div>' : '') +
+        (featuresHtml ? '<div class="prop-card-features">' + featuresHtml + '</div>' : '') +
       '</div>' +
     '</div>'
   );
@@ -629,9 +655,10 @@ function initMap(containerId, properties, centerLat, centerLng) {
 
   if (Array.isArray(properties)) {
     properties.forEach(prop => {
-      if (!prop.lat && !prop.lng) return;
-      const pLat = prop.lat || 8.6239;
-      const pLng = prop.lng || -70.2184;
+      // Si no tiene lat/lng, usar coordenadas por defecto de Barinas
+      // con un pequeño offset aleatorio para que no se superpongan
+      const pLat = prop.lat || (8.6239 + (Math.random() - 0.5) * 0.02);
+      const pLng = prop.lng || (-70.2184 + (Math.random() - 0.5) * 0.02);
       const price = formatPrice(prop.price, prop.currency);
       const slug = prop.slug || slugify(prop.title || 'propiedad');
       const title = escapeHtml(prop.title || 'Propiedad');
@@ -769,6 +796,11 @@ async function loadPropertiesPage(params) {
       properties.forEach(prop => { html += createPropertyCard(prop); });
       grid.innerHTML = html;
       initLazyLoading();
+      // Actualizar el mapa de propiedades con los resultados
+      var propiedadesMap = document.getElementById('propiedadesMap');
+      if (propiedadesMap && typeof initMap === 'function') {
+        initMap('propiedadesMap', properties, 8.6239, -70.2184);
+      }
     }
 
     if (paginationEl) {

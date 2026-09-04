@@ -165,6 +165,7 @@
     }
   </style>
   <link rel="icon" href="images/arriendo-alquiler-venta-de-propiedades-fincas-inmuebles-negocios-en-barinas-alianza58.jpg.html">
+  <script src="/js/compress-video.js"></script>
 </head>
 <body>
   <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
@@ -889,9 +890,11 @@
       }
 
       // Validar tipo
-      var validTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-      if (validTypes.indexOf(file.type) === -1) {
-        alert('Formato no soportado. Usa MP4, WebM u OGG.');
+      var validTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
+      var ext = file.name.split('.').pop().toLowerCase();
+      var validExts = ['mp4', 'webm', 'ogg', 'mov', 'm4v'];
+      if (validTypes.indexOf(file.type) === -1 && validExts.indexOf(ext) === -1) {
+        alert('Formato no soportado. Usa MP4, WebM, MOV u OGG.');
         input.value = '';
         return;
       }
@@ -908,23 +911,59 @@
       var progressText = document.getElementById('videoProgressText');
       progressDiv.style.display = 'block';
       progressBar.style.width = '0%';
-      progressText.textContent = 'Subiendo video...';
+      progressText.textContent = 'Comprimiendo video...';
 
-      // Subir con FormData
+      // COMPRIMIR VIDEO antes de subir
+      var fileToUpload = file;
+      try {
+        if (typeof compressVideo === 'function' && file.size > 10 * 1024 * 1024) {
+          var result = await compressVideo(file, {
+            maxWidth: 1280,
+            maxHeight: 720,
+            videoBitrate: 1500000,
+            audioBitrate: 128000,
+            onProgress: function(pct) {
+              progressBar.style.width = (pct / 2) + '%';
+              progressText.textContent = 'Comprimiendo... ' + pct + '%';
+            }
+          });
+
+          if (result.compressed) {
+            fileToUpload = result.file;
+            console.log('[Video] Comprimido: ' +
+              (result.originalSize / 1024 / 1024).toFixed(1) + 'MB → ' +
+              (result.newSize / 1024 / 1024).toFixed(1) + 'MB (-' +
+              ((1 - result.newSize / result.originalSize) * 100).toFixed(0) + '%)');
+
+            // Actualizar preview con video comprimido
+            var compressedURL = URL.createObjectURL(fileToUpload);
+            preview.innerHTML = '<video src="' + compressedURL + '" controls style="width:100%;max-height:300px;border-radius:10px;background:#000;"></video>' +
+              '<p style="text-align:center;font-size:13px;color:#666;margin-top:6px;">' + fileToUpload.name +
+              ' (' + (result.newSize / 1024 / 1024).toFixed(1) + ' MB · comprimido de ' + (result.originalSize / 1024 / 1024).toFixed(1) + ' MB)</p>';
+          }
+        }
+      } catch (err) {
+        console.warn('[Video] Compresión falló, subiendo original:', err.message);
+      }
+
+      // Subir el video (comprimido u original)
+      progressText.textContent = 'Subiendo video...';
+      progressBar.style.width = '50%';
+
       var formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', fileToUpload);
       formData.append('product_type', 'video');
 
       try {
         var xhr = new XMLHttpRequest();
         xhr.open('POST', '/api/upload');
 
-        // Progreso de subida
+        // Progreso de subida (50% al 100%)
         xhr.upload.addEventListener('progress', function(e) {
           if (e.lengthComputable) {
-            var pct = Math.round((e.loaded / e.total) * 100);
+            var pct = 50 + Math.round((e.loaded / e.total) * 50);
             progressBar.style.width = pct + '%';
-            progressText.textContent = 'Subiendo... ' + pct + '%';
+            progressText.textContent = 'Subiendo... ' + (pct - 50) + '%';
           }
         });
 
@@ -935,7 +974,6 @@
               uploadedVideoUrl = data.url;
               progressBar.style.width = '100%';
               progressText.textContent = '✅ Video subido correctamente';
-              // Si hay youtube_url, limpiarlo (preferimos el video local)
               var ytInput = document.getElementById('youtube_url');
               if (ytInput && ytInput.value) {
                 ytInput.value = '';

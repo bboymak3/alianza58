@@ -645,6 +645,28 @@
           if (cover) coverImageId = cover.id;
           renderGallery();
         }
+
+        // Mostrar video existente si hay youtube_url
+        var existingVideo = p.youtube_url || '';
+        if (existingVideo && existingVideo.indexOf('/api/serve') === 0) {
+          // Es un video local subido
+          uploadedVideoUrl = existingVideo;
+          var videoPreview = document.getElementById('videoPreview');
+          if (videoPreview) {
+            videoPreview.innerHTML = '<video src="' + existingVideo + '" controls style="width:100%;max-height:300px;border-radius:10px;background:#000;"></video>' +
+              '<p style="text-align:center;font-size:13px;color:#666;margin-top:6px;">Video actual</p>';
+          }
+          // Limpiar el input de YouTube (es un video local, no URL)
+          var ytInput = document.getElementById('youtube_url');
+          if (ytInput) ytInput.value = '';
+        } else if (existingVideo && existingVideo.indexOf('youtube.com') !== -1 || existingVideo.indexOf('youtu.be') !== -1) {
+          // Es URL de YouTube — ya está en el input
+          var videoPreview2 = document.getElementById('videoPreview');
+          if (videoPreview2) {
+            videoPreview2.innerHTML = '<p style="text-align:center;font-size:13px;color:#666;padding:10px;">YouTube: ' + existingVideo + '</p>';
+          }
+        }
+
         hideLoading();
       } catch(e) {
         toast('Error al cargar propiedad', 'error');
@@ -756,7 +778,7 @@
         bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
         parking_spaces: parseInt(document.getElementById('parking_spaces').value) || 0,
         year_built: document.getElementById('year_built').value || null,
-        youtube_url: document.getElementById('youtube_url').value.trim() || null,
+        youtube_url: document.getElementById('youtube_url').value.trim() || (uploadedVideoUrl || null),
         status: document.getElementById('status').value,
         featured: document.getElementById('featured').checked ? 1 : 0,
         sort_order: parseInt(document.getElementById('sort_order').value) || 0,

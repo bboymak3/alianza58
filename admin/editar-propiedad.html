@@ -904,9 +904,9 @@
       var file = input.files[0];
       var token = localStorage.getItem('a58_token');
 
-      // Validar tamaño (50MB max)
-      if (file.size > 50 * 1024 * 1024) {
-        alert('El video es demasiado grande. Máximo 50MB.');
+      // Validar tamaño (100MB max — Cloudflare Free permite 100MB body)
+      if (file.size > 100 * 1024 * 1024) {
+        alert('El video es demasiado grande. Máximo 100MB.\n\nPara videos más grandes, usa YouTube.');
         input.value = '';
         return;
       }
@@ -939,11 +939,17 @@
       var fileToUpload = file;
       try {
         if (typeof compressVideo === 'function' && file.size > 10 * 1024 * 1024) {
+          // Compresión agresiva para videos grandes
+          var maxBitrate = 1200000; // 1.2Mbps (calidad decente para web)
+          if (file.size > 50 * 1024 * 1024) {
+            maxBitrate = 800000; // 0.8Mbps para videos muy grandes
+          }
+
           var result = await compressVideo(file, {
             maxWidth: 1280,
             maxHeight: 720,
-            videoBitrate: 1500000,
-            audioBitrate: 128000,
+            videoBitrate: maxBitrate,
+            audioBitrate: 96000, // 96kbps audio
             onProgress: function(pct) {
               progressBar.style.width = (pct / 2) + '%';
               progressText.textContent = 'Comprimiendo... ' + pct + '%';

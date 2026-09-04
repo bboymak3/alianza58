@@ -464,6 +464,22 @@
               <label for="youtube_url">URL de YouTube (video)</label>
               <input type="url" id="youtube_url" name="youtube_url" placeholder="https://youtube.com/watch?v=...">
             </div>
+            <!-- Subir videos locales -->
+            <div class="form-group" style="margin-top:18px;">
+              <label>Subir video local (MP4, WebM — Máx 50MB)</label>
+              <div style="border:2px dashed #ccc;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border-color 0.2s;" id="videoUploadArea" onmouseover="this.style.borderColor='#C0392B'" onmouseout="this.style.borderColor='#ccc'">
+                <div style="font-size:2rem;">🎬</div>
+                <p style="color:#666;font-size:14px;margin-top:6px;">Haz clic para seleccionar un video</p>
+                <input type="file" id="videoInput" accept="video/mp4,video/webm,video/ogg" style="display:none" onchange="handleVideoUpload(this)">
+              </div>
+              <div id="videoPreview" style="margin-top:10px;"></div>
+              <div id="videoUploadProgress" style="display:none;margin-top:10px;">
+                <div style="background:#e0e0e0;border-radius:8px;height:8px;overflow:hidden;">
+                  <div id="videoProgressBar" style="background:#C0392B;height:100%;width:0%;transition:width 0.3s;"></div>
+                </div>
+                <p style="text-align:center;font-size:12px;color:#666;margin-top:4px;" id="videoProgressText">Subiendo...</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -847,6 +863,103 @@
             toast('Foto subida correctamente');
           }
         }).catch(err => toast('Error al subir foto', 'error'));
+      }
+    }
+
+    // ─── Video local upload ──────────────────────────────────
+    var videoUploadArea = document.getElementById('videoUploadArea');
+    if (videoUploadArea) {
+      videoUploadArea.addEventListener('click', function() {
+        document.getElementById('videoInput').click();
+      });
+    }
+
+    var uploadedVideoUrl = null;
+
+    async function handleVideoUpload(input) {
+      if (!input.files || !input.files[0]) return;
+      var file = input.files[0];
+      var token = localStorage.getItem('a58_token');
+
+      // Validar tamaño (50MB max)
+      if (file.size > 50 * 1024 * 1024) {
+        alert('El video es demasiado grande. Máximo 50MB.');
+        input.value = '';
+        return;
+      }
+
+      // Validar tipo
+      var validTypes = ['video/mp4', 'video/webm', 'video/ogg'];
+      if (validTypes.indexOf(file.type) === -1) {
+        alert('Formato no soportado. Usa MP4, WebM u OGG.');
+        input.value = '';
+        return;
+      }
+
+      // Mostrar preview
+      var preview = document.getElementById('videoPreview');
+      var videoURL = URL.createObjectURL(file);
+      preview.innerHTML = '<video src="' + videoURL + '" controls style="width:100%;max-height:300px;border-radius:10px;background:#000;"></video>' +
+        '<p style="text-align:center;font-size:13px;color:#666;margin-top:6px;">' + file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)</p>';
+
+      // Mostrar progress bar
+      var progressDiv = document.getElementById('videoUploadProgress');
+      var progressBar = document.getElementById('videoProgressBar');
+      var progressText = document.getElementById('videoProgressText');
+      progressDiv.style.display = 'block';
+      progressBar.style.width = '0%';
+      progressText.textContent = 'Subiendo video...';
+
+      // Subir con FormData
+      var formData = new FormData();
+      formData.append('file', file);
+      formData.append('product_type', 'video');
+
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload');
+
+        // Progreso de subida
+        xhr.upload.addEventListener('progress', function(e) {
+          if (e.lengthComputable) {
+            var pct = Math.round((e.loaded / e.total) * 100);
+            progressBar.style.width = pct + '%';
+            progressText.textContent = 'Subiendo... ' + pct + '%';
+          }
+        });
+
+        xhr.onload = function() {
+          if (xhr.status === 200 || xhr.status === 201) {
+            var data = JSON.parse(xhr.responseText);
+            if (data.url) {
+              uploadedVideoUrl = data.url;
+              progressBar.style.width = '100%';
+              progressText.textContent = '✅ Video subido correctamente';
+              // Si hay youtube_url, limpiarlo (preferimos el video local)
+              var ytInput = document.getElementById('youtube_url');
+              if (ytInput && ytInput.value) {
+                ytInput.value = '';
+              }
+              toast('Video subido correctamente');
+            }
+          } else {
+            progressText.textContent = '❌ Error al subir video';
+            progressDiv.style.display = 'none';
+            alert('Error al subir el video. Intenta con un archivo más pequeño.');
+          }
+        };
+
+        xhr.onerror = function() {
+          progressText.textContent = '❌ Error de conexión';
+          progressDiv.style.display = 'none';
+          alert('Error de conexión al subir el video.');
+        };
+
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        xhr.send(formData);
+      } catch (err) {
+        progressDiv.style.display = 'none';
+        alert('Error: ' + err.message);
       }
     }
   </script>
